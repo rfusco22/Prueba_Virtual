@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { DashboardHeader } from '../components/DashboardHeader';
 import { CategorySidebar } from '../components/CategorySidebar';
-import { Plus, Trash2, Edit3, Check, X } from 'lucide-react';
+import { 
+  Plus, Trash2, Edit3, Check, X, Search, 
+  Tag, LayoutGrid, SlidersHorizontal 
+} from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { toast } from "sonner";
@@ -16,6 +19,7 @@ export const CategoriesPage: React.FC = () => {
   const [newName, setNewName] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [searchQuery, setSearchQuery] = useState(''); // <--- BÚSQUEDA DE CATEGORÍAS
 
   // ESTADO PARA EL MENÚ MÓVIL (Esto es lo que te faltaba)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,6 +46,10 @@ export const CategoriesPage: React.FC = () => {
       setCategories([]); 
     }
   };
+
+  const filteredCategories = categories.filter(cat => 
+    cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleCreate = async () => {
     if (!newName.trim()) return;
@@ -159,6 +167,21 @@ export const CategoriesPage: React.FC = () => {
               )}
             </div>
 
+            {/* BARRA DE BÚSQUEDA CON SEPARACIÓN */}
+              <div className="flex gap-2 mb-2">
+                <div className="relative flex-1 group">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-slate-900 transition-colors" />
+                  <Input 
+                    placeholder="Search categories..." 
+                    className="pl-10 h-11 bg-white border-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-slate-900/5 transition-all"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                
+              </div>
+            
+
             <div className="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden">
               <div className="grid grid-cols-1 divide-y divide-slate-50">
                 
@@ -177,8 +200,8 @@ export const CategoriesPage: React.FC = () => {
                   </div>
                 )}
 
-                {Array.isArray(categories) && categories.length > 0 ? (
-                  categories.map((cat) => (
+                {filteredCategories.length > 0 ? (
+                  filteredCategories.map((cat) => (
                     <div key={cat.id} className="p-4 flex items-center justify-between hover:bg-slate-50/30 transition-colors">
                       <div className="flex items-center gap-4 flex-1">
                         <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: cat.color || '#cbd5e1' }} />
