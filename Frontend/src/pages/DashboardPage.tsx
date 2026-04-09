@@ -6,7 +6,8 @@ import { CategorySidebar } from '../components/CategorySidebar';
 import { NoteGrid } from '../components/NoteGrid';
 import { NoteCard } from '../components/NoteCard';
 import { NoteFormModal } from '../components/NoteForm';
-import { Plus, Inbox, Archive as ArchiveIcon, Loader2, X } from 'lucide-react';
+import { Plus, Inbox, Archive as ArchiveIcon, Loader2, X, Search } from 'lucide-react';
+import { Input } from '../components/ui/input';
 
 interface Category {
   id: string;
@@ -43,6 +44,10 @@ export const DashboardPage: React.FC = () => {
   const [editingNote, setEditingNote] = useState<(Note & { id: string }) | undefined>();
   const [loading, setLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(''); // <--- NUEVO ESTADO
+  const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'week'>('all');
+
+
 
   // EFECTO: Detectar cambios en la URL (cuando navegas desde CategoriesPage)
   useEffect(() => {
@@ -186,7 +191,34 @@ export const DashboardPage: React.FC = () => {
   };
 
   // FILTRADO MANUAL: Basado en el estado showArchived
-  const displayedNotes = notes.filter(note => note.isArchived === showArchived);
+  const displayedNotes = notes.filter(note => {
+    // 1. Filtro de Archivo
+    const matchesArchive = note.isArchived === showArchived;
+    
+    // 2. Filtro de Categoría
+    const matchesCategory = selectedCategory ? note.categoryId === selectedCategory : true;
+    
+    // 3. Filtro de Texto (Título o Contenido)
+    const matchesSearch = 
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      note.content.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // 4. Filtro de Fecha (Lógica profesional)
+    if (dateFilter === 'all') return matchesArchive && matchesCategory && matchesSearch;
+    
+    const noteDate = new Date(note.createdAt);
+    const now = new Date();
+    if (dateFilter === 'today') {
+      return matchesArchive && matchesCategory && matchesSearch && 
+             noteDate.toDateString() === now.toDateString();
+    }
+    if (dateFilter === 'week') {
+      const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      return matchesArchive && matchesCategory && matchesSearch && noteDate >= oneWeekAgo;
+    }
+
+    return matchesArchive && matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
@@ -262,6 +294,28 @@ export const DashboardPage: React.FC = () => {
                   <span className="sm:hidden">New Note</span>
                 </button>
               )}
+            </div>
+
+            {/* BARRA DE BÚSQUEDA Y FILTROS */}
+            {/* Añadimos mb-8 (margin-bottom) para dar espacio antes de las notas */}
+            <div className="flex flex-col sm:flex-row gap-2 mb-8"> 
+              <div className="relative flex-1 group">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-slate-900 transition-colors" />
+                <Input 
+                  placeholder="Search in your notes..." 
+                  className="pl-10 h-11 bg-white border-slate-200 rounded-xl shadow-sm focus:ring-2 focus:ring-slate-900/5 transition-all"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-100 rounded-full text-slate-400"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
             </div>
 
             {loading ? (
