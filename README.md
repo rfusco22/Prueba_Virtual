@@ -1,234 +1,110 @@
-# Notas App - Full Stack
+# 📝 FuscoNotes | Full-Stack Productivity Suite
 
-Una aplicación web moderna para gestionar tus notas personales. Backend con NestJS + MySQL y Frontend con React + Vite.
+[](https://nestjs.com/)
+[](https://reactjs.org/)
+[](https://www.mysql.com/)
+[](https://tailwindcss.com/)
 
-## Características
+**FuscoNotes** is a high-performance note-management platform designed to deliver a fluid, secure, and organized user experience. It leverages a robust architecture based on logical microservices and a cutting-edge reactive interface.
 
-- ✅ Crear, editar, eliminar notas
-- ✅ Archivar y desarchivar notas
-- ✅ Filtrar por estado (Activas/Archivadas)
-- ✅ Interfaz moderna y responsive
-- ✅ API RESTful robusta
-- ✅ Base de datos persistente con MySQL
+-----
 
-## Stack Tecnológico
+## 🚀 Key Features
 
-### Backend
-- **Framework**: NestJS 10.x (Node.js)
-- **Base de datos**: MySQL 8.0+
-- **ORM**: TypeORM 0.3.x
-- **Validación**: class-validator
-- **Arquitectura**: Capas (Controllers → Services → Repositories)
+  * **Robust Authentication:** Secure system based on **JWT (JSON Web Tokens)** with route protection on both client and server sides.
+  * **Smart Note Management:** Full CRUD operations with **archiving and recovery** capabilities to keep the workspace clutter-free.
+  * **Dynamic Categorization:** Taxonomy system with customizable color-coded labels for efficient visual organization.
+  * **Layered Architecture:** Backend structured into Controllers, Services, and Repositories to guarantee scalability and maintainability.
+  * **Premium UI/UX:** Responsive interface built with **Shadcn/UI** and **Tailwind CSS**, optimized for mobile devices (Drawer Menu) and desktop.
+  * **Real-Time Notifications:** Instant user feedback through a polished **Sonner Toasts** system.
 
-### Frontend
-- **Framework**: React 18.x
-- **Build Tool**: Vite 5.x
-- **Estilos**: Tailwind CSS 3.x
-- **HTTP Client**: Axios
-- **Lenguaje**: TypeScript
+-----
 
-## Requisitos
+## 🛠️ Tech Stack
 
-- Node.js 18+
-- npm/pnpm 7+
-- MySQL 8.0+
+### **Frontend (Client Side)**
 
-## Instalación Rápida
+  * **Framework:** React 18 powered by **Vite** (ultra-fast build tool).
+  * **Language:** TypeScript (Strict typing for reduced runtime errors).
+  * **Styling:** Tailwind CSS & Lucide Icons.
+  * **Navigation:** React Router Dom v6 (URL-driven state management).
 
-### Opción 1: Script automático (Linux/macOS)
+### **Backend (Server Side)**
+
+  * **Framework:** NestJS (A progressive Node.js framework).
+  * **ORM:** TypeORM for efficient database communication.
+  * **Security:** Passport.js & JWT Strategy.
+  * **Validation:** Class-Validator & DTOs for data integrity.
+
+### **Infrastructure**
+
+  * **Database:** MySQL 8.0.
+  * **Version Control:** Git / GitHub.
+
+-----
+
+## 📂 Ecosystem Structure
+
+```bash
+├── Frontend/             # React + Vite Application
+│   ├── src/components/   # Atomic Components & UI (Shadcn)
+│   ├── src/contexts/     # Global state management (Auth)
+│   └── src/pages/        # Main views (Dashboard, Categories, Login)
+├── backend/              # NestJS Server
+│   ├── src/auth/         # Security & JWT logic
+│   ├── src/notes/        # Note management module
+│   └── src/categories/   # Taxonomy & Labeling module
+└── setup.sh              # Environment automation script (macOS/Linux)
+```
+
+-----
+
+## ⚙️ Local Setup & Deployment
+
+### 1\. Prerequisites
+
+  * Node.js (v18 or higher)
+  * MySQL Server running
+  * Homebrew (optional, for automatic installation on macOS)
+
+### 2\. Automated Installation (Recommended)
+
+I have developed a script that automates dependency installation and database configuration:
 
 ```bash
 chmod +x setup.sh
 ./setup.sh
 ```
 
-### Opción 2: Manual
+### 3\. Running in Development
+
+To launch the full ecosystem, start both services in separate terminals:
+
+**Terminal A (Backend):**
 
 ```bash
-# Backend
-cd backend
-npm install
-
-# Frontend
-cd ../Frontend
-npm install
+cd backend && npm run start:dev
 ```
 
-## Ejecución
-
-### Terminal 1: Base de datos
-```bash
-mysql -u root -p
-# Ejecuta:
-CREATE DATABASE IF NOT EXISTS notes_app;
-GRANT ALL PRIVILEGES ON notes_app.* TO 'root'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-### Terminal 2: Backend
-```bash
-cd backend
-npm run start:dev
-# El servidor estará en http://localhost:3001
-```
-
-### Terminal 3: Frontend
-```bash
-cd Frontend
-npm run dev
-# La app estará en http://localhost:5173
-```
-
-## Documentación Completa
-
-Para instrucciones detalladas de instalación y solución de problemas, consulta:
-
-📖 [deploylocal.md](./deploylocal.md)
-
-## Estructura del Proyecto
-
-```
-.
-├── backend/
-│   ├── src/
-│   │   ├── notes/
-│   │   │   ├── entities/
-│   │   │   ├── dto/
-│   │   │   ├── repositories/
-│   │   │   ├── services/
-│   │   │   ├── controllers/
-│   │   │   └── notes.module.ts
-│   │   ├── app.module.ts
-│   │   └── main.ts
-│   ├── .env
-│   └── package.json
-├── Frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── services/
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   ├── index.html
-│   └── package.json
-├── deploylocal.md
-├── setup.sh
-└── README.md
-```
-
-## Arquitectura
-
-### Backend - Capas
-
-1. **Controller** (`NotesController`)
-   - Maneja las rutas HTTP
-   - Valida las requests
-   - Devuelve responses
-
-2. **Service** (`NotesService`)
-   - Contiene la lógica de negocio
-   - Maneja excepciones
-   - Orquesta operaciones
-
-3. **Repository** (`NotesRepository`)
-   - Acceso directo a la base de datos
-   - Operaciones CRUD
-   - Queries personalizadas
-
-4. **Entity** (`Note`)
-   - Define la estructura de datos
-   - Mapeo con tabla MySQL
-
-### Frontend - Componentes
-
-1. **App.tsx**
-   - Componente principal
-   - Gestiona estado global
-   - Maneja llamadas API
-
-2. **NoteForm.tsx**
-   - Formulario para crear/editar
-
-3. **NoteItem.tsx**
-   - Componente individual de nota
-
-4. **notesApi.ts**
-   - Cliente HTTP centralizado
-
-## API Endpoints
-
-```
-Base URL: http://localhost:3001/api/notes
-
-GET    /              - Obtener todas las notas
-GET    /active        - Obtener notas activas
-GET    /archived      - Obtener notas archivadas
-GET    /:id           - Obtener nota por ID
-POST   /              - Crear nota
-PUT    /:id           - Actualizar nota
-POST   /:id/archive   - Archivar nota
-POST   /:id/unarchive - Desarchivar nota
-DELETE /:id           - Eliminar nota
-```
-
-## Variables de Entorno
-
-### Backend (.env)
-```
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=root
-DB_NAME=notes_app
-NODE_ENV=development
-PORT=3001
-```
-
-## Desarrollo
-
-### Scripts Backend
+**Terminal B (Frontend):**
 
 ```bash
-npm run start:dev      # Desarrollo con hot reload
-npm run build          # Compilar
-npm run start:prod     # Producción
-npm run lint          # Linting
+cd Frontend && npm run dev
 ```
 
-### Scripts Frontend
+-----
 
-```bash
-npm run dev           # Desarrollo
-npm run build         # Compilar
-npm run preview       # Vista previa
-```
+## 🔌 API Endpoints (Summary)
 
-## Mejoras Futuras
+| Method | Endpoint | Action |
+| :--- | :--- | :--- |
+| `POST` | `/api/auth/login` | User authentication & Token generation. |
+| `GET` | `/api/notes` | Fetch notes (Optional category filter). |
+| `POST` | `/api/notes` | Create a new note linked to the user. |
+| `PUT` | `/api/notes/:id` | Update content or archive status. |
+| `DELETE` | `/api/notes/:id` | Permanent deletion. |
 
-- [ ] Autenticación de usuarios
-- [ ] Categorías/etiquetas para notas
-- [ ] Búsqueda full-text
-- [ ] Sincronización en tiempo real (WebSockets)
-- [ ] Exportar notas (PDF, Markdown)
-- [ ] Compartir notas
-- [ ] Modo oscuro
+-----
 
-## Troubleshooting
-
-### "Cannot GET /api/notes"
-- Verifica que el backend está corriendo en puerto 3001
-
-### "ECONNREFUSED 127.0.0.1:3306"
-- MySQL no está corriendo. Inicia el servicio
-
-### "CORS error"
-- El frontend debe estar en http://localhost:5173
-
-Más detalles en [deploylocal.md](./deploylocal.md)
-
-## Licencia
-
-MIT
-
----
-
-Creado con ❤️ | [Guía completa](./deploylocal.md)
+**Developed with ❤️ by Riccardo Fusco**
+*Software Engineer Portfolio Project*
