@@ -46,15 +46,32 @@
 ## 📂 Ecosystem Structure
 
 ```bash
-├── Frontend/             # React + Vite Application
-│   ├── src/components/   # Atomic Components & UI (Shadcn)
-│   ├── src/contexts/     # Global state management (Auth)
-│   └── src/pages/        # Main views (Dashboard, Categories, Login)
-├── backend/              # NestJS Server
-│   ├── src/auth/         # Security & JWT logic
-│   ├── src/notes/        # Note management module
-│   └── src/categories/   # Taxonomy & Labeling module
-└── setup.sh              # Environment automation script (macOS/Linux)
+.
+├── Frontend/                 # React SPA (Client Side)
+│   ├── src/
+│   │   ├── components/       # Reusable Atomic UI & Business Components
+│   │   │   ├── ui/           # Shadcn base components (Button, Input, etc.)
+│   │   │   └── ...           # Logic-specific components (NoteCard, Sidebar)
+│   │   ├── contexts/         # Global state management (Authentication & Session)
+│   │   ├── lib/              # Utility configurations (Tailwind Merge, Axios)
+│   │   ├── pages/            # Application views (Dashboard, Categories, Login)
+│   │   └── services/         # API Client layer for Backend communication
+│   └── tailwind.config.js    # Design system tokens and theme definition
+│
+├── backend/                  # NestJS API (Server Side)
+│   ├── src/
+│   │   ├── auth/             # Security Module (Passport, JWT, Encryption)
+│   │   ├── categories/       # Taxonomy Module (Labeling logic)
+│   │   ├── notes/            # Core Business Module (Note CRUD & Archiving)
+│   │   │   ├── controllers/  # Route handlers and input validation
+│   │   │   ├── services/     # Pure business logic implementation
+│   │   │   ├── entities/     # TypeORM Models (MySQL Schema)
+│   │   │   └── dto/          # Data Transfer Objects (Type safety for requests)
+│   │   └── main.ts           # Entry point & Middleware configuration
+│   └── dist/                 # Compiled production code
+│
+├── setup.sh                  # Automation Orchestrator (Install & DB Setup)
+└── README.md                 # Technical Documentation
 ```
 
 -----
