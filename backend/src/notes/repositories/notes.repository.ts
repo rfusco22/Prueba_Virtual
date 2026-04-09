@@ -19,17 +19,22 @@ export class NotesRepository {
   async findAll(): Promise<Note[]> {
     return await this.noteRepository.find({
       order: { createdAt: 'DESC' },
+      relations: ['category'],
     });
   }
 
   async findById(id: string): Promise<Note | null> {
-    return await this.noteRepository.findOne({ where: { id } });
+    return await this.noteRepository.findOne({
+      where: { id },
+      relations: ['category'],
+    });
   }
 
   async findActive(): Promise<Note[]> {
     return await this.noteRepository.find({
       where: { isArchived: false },
       order: { createdAt: 'DESC' },
+      relations: ['category'],
     });
   }
 
@@ -37,6 +42,15 @@ export class NotesRepository {
     return await this.noteRepository.find({
       where: { isArchived: true },
       order: { createdAt: 'DESC' },
+      relations: ['category'],
+    });
+  }
+
+  async findByCategory(categoryId: string): Promise<Note[]> {
+    return await this.noteRepository.find({
+      where: { categoryId, isArchived: false },
+      order: { createdAt: 'DESC' },
+      relations: ['category'],
     });
   }
 
@@ -58,3 +72,4 @@ export class NotesRepository {
     return await this.update(id, { isArchived: false });
   }
 }
+

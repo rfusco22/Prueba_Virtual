@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsArray } from 'class-validator';
 
 export class CreateNoteDto {
   @IsString()
@@ -8,6 +8,18 @@ export class CreateNoteDto {
   @IsString()
   @IsNotEmpty()
   content: string;
+
+  @IsString()
+  @IsOptional()
+  excerpt?: string;
+
+  @IsArray()
+  @IsOptional()
+  tags?: string[];
+
+  @IsString()
+  @IsOptional()
+  categoryId?: string;
 }
 
 export class UpdateNoteDto {
@@ -19,7 +31,20 @@ export class UpdateNoteDto {
   @IsOptional()
   content?: string;
 
+  @IsString()
+  @IsOptional()
+  excerpt?: string;
+
+  @IsArray()
+  @IsOptional()
+  tags?: string[];
+
   @IsBoolean()
   @IsOptional()
   isArchived?: boolean;
+
+  @IsString()
+  @IsOptional()
+  categoryId?: string;
 }
+

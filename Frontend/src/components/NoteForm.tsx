@@ -1,82 +1,226 @@
-import React, { useState, useEffect } from 'react'
-import { Note, CreateNotePayload } from '../services/notesApi'
+import React, { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
+
+interface Category {
+  id: string;
+  name: string;
+  color?: string;
+}
+
+interface Note {
+  id?: string;
+  title: string;
+  content: string;
+  excerpt?: string;
+  tags?: string[];
+  categoryId?: string;
+  isArchived?: boolean;
+}
 
 interface NoteFormProps {
-  onSubmit: (payload: CreateNotePayload) => Promise<void>
-  onCancel: () => void
-  initialNote?: Note
-  isLoading?: boolean
+  note?: Note & { id: string };
+  categories: Category[];
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (note: Note) => Promise<void>;
 }
 
-export const NoteForm: React.FC<NoteFormProps> = ({ 
-  onSubmit, 
-  onCancel, 
-  initialNote,
-  isLoading = false 
+export const NoteFormModal: React.FC<NoteFormProps> = ({
+  note,
+  categories,
+  isOpen,
+  onClose,
+  onSubmit,
 }) => {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
+  const [formData, setFormData] = useState<Note>({
+    title: '',
+    content: '',
+    excerpt: '',
+    tags: [],
+    categoryId: '',
+  });
+  const [tagInput, setTagInput] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (initialNote) {
-      setTitle(initialNote.title)
-      setContent(initialNote.content)
+    if (note) {
+      setFormData(note);
+      setTagInput('');
+    } else {
+      setFormData({
+        title: '',
+        content: '',
+        excerpt: '',
+        tags: [],
+        categoryId: '',
+      });
     }
-  }, [initialNote])
+  }, [note, isOpen]);
+
+  const handleAddTag = () => {
+    if (tagInput.trim() && !formData.tags?.includes(tagInput)) {
+      setFormData({
+        ...formData,
+        tags: [...(formData.tags || []), tagInput],
+      });
+      setTagInput('');
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setFormData({
+      ...formData,
+      tags: formData.tags?.filter((t) => t !== tag) || [],
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!title.trim() || !content.trim()) {
-      alert('Por favor completa todos los campos')
-      return
+    e.preventDefault();
+    if (!formData.title.trim() || !formData.content.trim()) {
+      return;
     }
-    await onSubmit({ title, content })
-    setTitle('')
-    setContent('')
-  }
+
+    setIsSubmitting(true);
+    try {
+      await onSubmit(formData);
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6 mb-6 border-t-4 border-primary">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        {initialNote ? 'Editar Nota' : 'Nueva Nota'}
-      </h2>
-      
-      <input
-        type="text"
-        placeholder="Título"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        maxLength={100}
-        className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-        disabled={isLoading}
-      />
-      
-      <textarea
-        placeholder="Contenido"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        rows={5}
-        className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-        disabled={isLoading}
-      />
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-slate-900">
+            {note ? 'Edit Note' : 'New Note'}
+          </h2>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">
+            <X size={24} />
+          </button>
+        </div>
 
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="flex-1 bg-primary text-white py-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
-        >
-          {isLoading ? 'Guardando...' : initialNote ? 'Actualizar' : 'Guardar'}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          disabled={isLoading}
-          className="flex-1 bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
-        >
-          Cancelar
-        </button>
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Title
+            </label>
+            <input
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="Note title"
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Content
+            </label>
+            <textarea
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              placeholder="Write your note here..."
+              rows={6}
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Excerpt
+            </label>
+            <input
+              type="text"
+              value={formData.excerpt || ''}
+              onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+              placeholder="Brief summary (optional)"
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Category
+            </label>
+            <select
+              value={formData.categoryId || ''}
+              onChange={(e) => setFormData({ ...formData, categoryId: e.target.value || undefined })}
+              className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
+            >
+              <option value="">No category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Tags
+            </label>
+            <div className="flex gap-2 mb-3">
+              <input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                placeholder="Add tag and press Enter"
+                className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900"
+              />
+              <button
+                type="button"
+                onClick={handleAddTag}
+                className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200"
+              >
+                Add
+              </button>
+            </div>
+            {formData.tags && formData.tags.length > 0 && (
+              <div className="flex gap-2 flex-wrap">
+                {formData.tags.map((tag) => (
+                  <div
+                    key={tag}
+                    className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="hover:text-slate-900"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-3 pt-4 border-t border-slate-200">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-6 py-3 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 px-6 py-3 bg-slate-900 text-white rounded-lg hover:bg-slate-800 font-medium disabled:opacity-50"
+            >
+              {isSubmitting ? 'Saving...' : 'Save Note'}
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
-  )
-}
+    </div>
+  );
+};

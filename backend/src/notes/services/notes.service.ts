@@ -23,6 +23,10 @@ export class NotesService {
     return await this.notesRepository.findArchived();
   }
 
+  async getNotesByCategory(categoryId: string): Promise<Note[]> {
+    return await this.notesRepository.findByCategory(categoryId);
+  }
+
   async getNoteById(id: string): Promise<Note> {
     const note = await this.notesRepository.findById(id);
     if (!note) {
@@ -63,3 +67,4 @@ export class NotesService {
     return note;
   }
 }
+

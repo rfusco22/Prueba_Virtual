@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus, UseGuards, Query } from '@nestjs/common';
 import { NotesService } from '../services/notes.service';
 import { CreateNoteDto, UpdateNoteDto } from '../dto/note.dto';
 import { Note } from '../entities/note.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 @Controller('api/notes')
+@UseGuards(JwtAuthGuard)
 export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
@@ -14,7 +16,10 @@ export class NotesController {
   }
 
   @Get()
-  async getAllNotes(): Promise<Note[]> {
+  async getAllNotes(@Query('categoryId') categoryId?: string): Promise<Note[]> {
+    if (categoryId) {
+      return await this.notesService.getNotesByCategory(categoryId);
+    }
     return await this.notesService.getAllNotes();
   }
 
@@ -56,3 +61,4 @@ export class NotesController {
     return await this.notesService.deleteNote(id);
   }
 }
+
