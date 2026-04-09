@@ -1,101 +1,75 @@
 #!/bin/bash
 
-# Colores para output
+# Output Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}==================================${NC}"
-echo -e "${BLUE}     Setup - Notas App${NC}"
+echo -e "${BLUE}     FuscoNotes - Notes App${NC}"
 echo -e "${BLUE}==================================${NC}\n"
 
-# Verificar Node.js
-echo -e "${BLUE}Verificando Node.js...${NC}"
-if ! command -v node &> /dev/null; then
-    echo -e "${RED}❌ Node.js no está instalado${NC}"
-    echo "Descárgalo desde: https://nodejs.org/"
-    exit 1
+# 1. Check/Install Homebrew (Required to install MySQL automatically)
+if ! command -v brew &> /dev/null; then
+    echo -e "${BLUE}Installing Homebrew to manage MySQL...${NC}"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
-echo -e "${GREEN}✓ Node.js $(node -v) instalado${NC}\n"
 
-# Verificar MySQL
-echo -e "${BLUE}Verificando MySQL...${NC}"
+# 2. Check/Install MySQL
+echo -e "${BLUE}Verifying MySQL...${NC}"
 if ! command -v mysql &> /dev/null; then
-    echo -e "${RED}⚠ MySQL no se encuentra en el PATH${NC}"
-    echo "Por favor, asegúrate de que MySQL está instalado y ejecutándose"
-    echo "Puedes iniciar MySQL manualmente y continuar"
-    read -p "¿Deseas continuar? (s/n) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Ss]$ ]]; then
-        exit 1
-    fi
+    echo -e "${BLUE}Installing MySQL Server...${NC}"
+    brew install mysql
+    brew services start mysql
+    echo -e "${GREEN}✓ MySQL installed and running${NC}"
 else
-    echo -e "${GREEN}✓ MySQL encontrado${NC}\n"
+    echo -e "${GREEN}✓ MySQL is already installed${NC}"
+    brew services start mysql
 fi
 
-# Setup Backend
-echo -e "${BLUE}=== Configurando Backend ===${NC}\n"
+# Wait for MySQL to wake up
+echo -e "${BLUE}Waiting for MySQL to be ready...${NC}"
+sleep 5
 
+# 3. Configure Database automatically
+echo -e "${BLUE}Configuring 'notes_app' Database...${NC}"
+# Attempting to create the database (assuming root has no password by default on new installs)
+mysql -u root -e "CREATE DATABASE IF NOT EXISTS notes_app; GRANT ALL PRIVILEGES ON notes_app.* TO 'root'@'localhost'; FLUSH PRIVILEGES;" 2>/dev/null
+
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}✓ Database configured successfully${NC}\n"
+else
+    echo -e "${RED}⚠ Note: If you have a MySQL password, please create the DB manually:${NC}"
+    echo "mysql -u root -p -e 'CREATE DATABASE notes_app;'"
+fi
+
+# 4. Backend Setup
+echo -e "${BLUE}=== Configuring Backend ===${NC}"
 if [ -d "backend" ]; then
     cd backend
-    
-    echo -e "${BLUE}Instalando dependencias del backend...${NC}"
     npm install --legacy-peer-deps
-    
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✓ Dependencias del backend instaladas${NC}\n"
-    else
-        echo -e "${RED}❌ Error instalando dependencias del backend${NC}"
-        exit 1
-    fi
-    
     cd ..
 else
-    echo -e "${RED}❌ Carpeta 'backend' no encontrada${NC}"
+    echo -e "${RED}❌ 'backend' folder not found${NC}"
     exit 1
 fi
 
-# Setup Frontend
-echo -e "${BLUE}=== Configurando Frontend ===${NC}\n"
-
+# 5. Frontend Setup
+echo -e "${BLUE}=== Configuring Frontend ===${NC}"
 if [ -d "Frontend" ]; then
     cd Frontend
-    
-    echo -e "${BLUE}Instalando dependencias del frontend...${NC}"
     npm install --legacy-peer-deps
-    
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✓ Dependencias del frontend instaladas${NC}\n"
-    else
-        echo -e "${RED}❌ Error instalando dependencias del frontend${NC}"
-        exit 1
-    fi
-    
     cd ..
 else
-    echo -e "${RED}❌ Carpeta 'Frontend' no encontrada${NC}"
+    echo -e "${RED}❌ 'Frontend' folder not found${NC}"
     exit 1
 fi
 
-# Resumen
-echo -e "${BLUE}==================================${NC}"
-echo -e "${GREEN}✓ Setup completado exitosamente!${NC}"
-echo -e "${BLUE}==================================${NC}\n"
+echo -e "\n${GREEN}==================================${NC}"
+echo -e "${GREEN}   ✓ EVERYTHING IS READY TO START${NC}"
+echo -e "${GREEN}==================================${NC}\n"
 
-echo -e "${BLUE}Próximos pasos:${NC}\n"
-
-echo "1. Inicia MySQL (si no está corriendo):"
-echo -e "   ${GREEN}mysql -u root -p${NC}\n"
-
-echo "2. En otra terminal, inicia el backend:"
-echo -e "   ${GREEN}cd backend && npm run start:dev${NC}\n"
-
-echo "3. En otra terminal, inicia el frontend:"
-echo -e "   ${GREEN}cd Frontend && npm run dev${NC}\n"
-
-echo "4. Abre tu navegador en:"
-echo -e "   ${GREEN}http://localhost:5173${NC}\n"
-
-echo -e "${BLUE}Para más información, consulta:${NC}"
-echo -e "   ${GREEN}deploylocal.md${NC}\n"
+echo -e "${BLUE}To run the App:${NC}"
+echo -e "1. Backend: ${GREEN}cd backend && npm run start:dev${NC}"
+echo -e "2. Frontend: ${GREEN}cd Frontend && npm run dev${NC}"
