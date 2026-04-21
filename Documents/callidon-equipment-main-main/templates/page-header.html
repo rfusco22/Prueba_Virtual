@@ -1,0 +1,170 @@
+{% load static %}
+{% load category_template_tags %}
+{% load cart_template_tags %}
+<!-- Header -->
+<header class="header1">
+	<!-- Header desktop -->
+	<div class="container-menu-header">
+		<!-- Top Banner -->
+		<div class="top-banner" style="background-color: #c1842f; color: white; padding: 6px 0; text-align: center; font-weight: bold; font-size: 14px;">
+			Immediate Availability - Expedited Shipping within the United States - 
+			<a href="tel:+17866741345" style="color: white;">
+				<i style="font-size:14px; color: white;" class="fa">&#xf095;</i>   (786) 674-1345
+			</a>
+		</div>
+		
+		<div class="wrap_header" style="min-height: 100px;">
+			
+			<!-- Menu -->
+			<div class="wrap_menu">
+				<!-- Logo -->
+				<div class="logo">
+					<a href="/">
+						<img src="{% static 'images/callidon_media/CALLIDON_LOGO.png' %}" alt="CALLIDON GROUP INC">
+					</a>
+				</div>
+				<nav class="menu">
+					<ul class="main_menu">
+						
+						<li>
+							<a href="/">Home</a>
+
+						</li>
+
+						<li>
+							<a href="/inventory/">Inventory</a>
+							<ul class="sub_menu">
+								{% categories %}
+							</ul>
+						</li>
+
+						<li>
+							<a href="/financing/">Financing</a>
+							<ul class="sub_menu">
+								<li><a href="/financing/first-citizens-bank">First Citizens Bank</a></li>
+								<li><a href="/financing/mazo-capital-solutions">MAZO Capital Solutions</a></li>
+							</ul>
+						</li>
+
+						<li>
+							<a href="/warranty/">Warranty</a>
+						</li>
+
+						<li>
+							<a href="/about-us/">About Us</a>
+						</li>
+
+						<li>
+							<a href="/contact/">Contact</a>
+						</li>
+					</ul>
+				</nav>
+				<!-- Search Bar - Fixed to Right -->
+				<div class="search-product pos-relative bo4 of-hidden" style="position: absolute; right: 100px; top: 50%; transform: translateY(-50%); width: 200px;">
+					<form action="/inventory" method="GET" name="search-form" style="width:100%;">
+						{% if search %}
+						<input class="s-text7 size6 p-l-23 p-r-50" type="text" name="search" id="search" value="{{ search }}" style="width: 100%;">
+						{% else %}
+						<input class="s-text7 size6 p-l-23 p-r-50" type="text" name="search" id="search" placeholder="Search Inventory..." style="width: 100%;">
+						{% endif %}
+						<button type="submit" class="flex-c-m size5 ab-r-m color2 color0-hov trans-0-4">
+							<i class="fs-12 fa fa-search" aria-hidden="true"></i>
+						</button>
+					</form>
+				</div>
+				<!-- Cart Icon -->
+				<div class="header-wrapicon2" style="position: absolute; right: 35px; top: 50%; transform: translateY(-50%);">
+					<a href="{% url 'core:order-summary' %}">
+						<img src="{% static 'images/flatbed.jpg' %}" class="header-icon1 js-show-header-dropdown" alt="ICON">
+						<span class="header-icons-noti">{{ request.user|cart_item_count }}</span>
+					</a>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+	<!-- Header Mobile -->
+	<div class="wrap_header_mobile">
+		<!-- Top Banner Mobile -->
+		<div class="top-banner" style="background-color: #c1842f; color: white; padding: 6px 0; text-align: center; font-weight: bold; font-size: 14px; width: 100%;">
+			Immediate Availability - 
+			<a href="tel:+17866741345" style="color: white;">
+				<i style="font-size:12px; color: white;" class="fa">&#xf095;</i>   (786) 674-1345
+			</a>
+		</div>
+		
+		<!-- Logo moblie -->
+		<div>
+			<a href="/" class="logo-mobile">
+				<img src="{% static 'images/callidon_media/CALLIDON_LOGO.png' %}" alt="CALLIDON GROUP INC">
+			</a>
+		</div>
+
+		<!-- Button show menu -->
+		<div class="btn-show-menu">
+			<!-- Header Icon mobile -->
+			<div class="header-icons-mobile">
+
+				<span class="linedivide2"></span>
+
+				<div class="header-wrapicon2">
+					<a href="/order-summary"><img src="{% static 'images/flatbed.jpg' %}" class="header-icon1 js-show-header-dropdown" alt="ICON"></a>
+					<span class="header-icons-noti">0</span>
+				</div>
+			</div>
+
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+				<span class="hamburger-box"style="width: 30px;">
+					<span class="hamburger-inner"></span>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- Menu Mobile -->
+	<div class="wrap-side-menu" >
+		<nav class="side-menu">
+			<ul class="main-menu">
+				<li class="item-menu-mobile">
+					<form action="/inventory" method="GET" name="search-form">
+						{% if search %}
+						<input class="s-text7 size6 p-l-23 p-r-50" type="text" name="search" id="search" value="{{ search }}">
+						{% else %}
+						<input class="s-text7 size6 p-l-23 p-r-50" type="text" name="search" id="search" placeholder="Search Inventory...">
+						{% endif %}
+					</form>
+				</li>
+				<li class="item-menu-mobile">
+					<a href="/">Home</a>
+				</li>
+
+				<li class="item-menu-mobile">
+					<a href="/inventory">All Inventory</a>
+					<ul class="sub-menu">
+						{% categories_mobile %}
+					</ul>
+					<i class="arrow-main-menu fa fa-angle-right" aria-hidden="true"></i>
+				</li>
+
+				<li class="item-menu-mobile">
+					<a href="/financing">Financing</a>
+				</li>
+				
+				<li class="item-menu-mobile">
+					<a href="/warranty">Warranty</a>
+				</li>
+
+				<li class="item-menu-mobile">
+					<a href="/about-us">About Us</a>
+				</li>
+
+				<li class="item-menu-mobile">
+					<a href="/contact">Contact</a>
+				</li>
+
+
+			</ul>
+		</nav>
+	</div>
+</header>

@@ -1,0 +1,174 @@
+{% load static %}
+{% load category_template_tags %}
+<footer>
+  <div class="bg6 p-t-45 p-b-43 p-l-45 p-r-45" id="footer-top">
+    <div class="flex-w" style="display: flex; justify-content: center;">
+      <div class="w-size6 p-t-30 p-l-15 p-r-15 respon3">
+        <h4 class="s-text12 p-b-30">
+          CONTACT
+        </h4>
+
+        <div>
+          <pre class="s-text7 w-size28" style="font-size: 15px;">
+Address:			5790 NW 35th Ave
+					Miami, FL 33142
+Phone:				(786) 674-1345
+Email:				info@callidongroup.com
+Business hours:		M-F: 8:30AM – 6:00PM
+					Sat: 9:00AM – 5:00PM
+					Sun: By Appointment</pre>
+          <!-- <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d66966.46311978775!2d-80.29545008993685!3d25.824407775819182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88d9b1add8d6cc17%3A0xc8a6fb1dca2b6c3e!2sCallidon%20Equipment!5e0!3m2!1sen!2sus!4v1717264636986!5m2!1sen!2sus" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> -->
+        </div>
+      </div>
+
+      <div class="w-size7 p-t-30 p-l-15 p-r-15 respon4">
+        <h4 class="s-text12 p-b-30">
+          Categories
+        </h4>
+
+        {% categories_li_a %}
+
+      </div>
+
+      <script>
+        function selectSearch() {
+          search = document.getElementById("search");
+          search.focus();
+          search.select();
+        }
+      </script>
+
+      <div class="w-size7 p-t-30 p-l-15 p-r-15 respon4">
+        <h4 class="s-text12 p-b-30">
+          Links
+        </h4>
+
+        <ul>
+          <li class="p-b-9">
+            <a href="#" onclick="selectSearch();" class="s-text7">
+              Search
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a href="/about-us" class="s-text7">
+              About Us
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a href="/contact" class="s-text7">
+              Contact Us
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a href="/warranty" class="s-text7">
+              Warranty
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a href="/financing" class="s-text7">
+              Financing
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a href="/return-policy" class="s-text7">
+              Return Policy
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a href="/privacy-policy" class="s-text7">
+              Privacy Policy
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="w-size7 p-t-30 p-l-15 p-r-15 respon4">
+        <h4 class="s-text12 p-b-30">
+          Social Media
+        </h4>
+
+        <ul>
+          <li class="p-b-9">
+            <a target="_blank" href="https://www.facebook.com/callidongroup" class="s-text7">
+              Facebook
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a target="_blank" href="https://www.instagram.com/callidonequipment/" class="s-text7">
+              Instagram
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a target="_blank" href="https://www.linkedin.com/in/leonardo-rogliero-5a2a88307" class="s-text7">
+              LinkedIn
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a target="_blank" href="https://www.youtube.com/@callidonequipment" class="s-text7">
+              YouTube
+            </a>
+          </li>
+
+          <li class="p-b-9">
+            <a target="_blank" href="https://wa.me/message/3BALTT5H6SKNK1" class="s-text7">
+              WhatsApp
+            </a>
+          </li>
+
+        </ul>
+        <a href="https://www.bbb.org/us/fl/miami/profile/construction-equipment/callidon-equipment-0633-92041545/#sealclick" target="_blank" rel="nofollow">
+          <img class="mx-auto sm:w-50 w-100 h-auto" src="https://seal-seflorida.bbb.org/seals/blue-seal-200-42-bbb-92041545.png" style="border: 0;" alt="Callidon Equipment BBB Business Review" />
+        </a>
+      </div>
+
+      <!-- <div class="w-size8 p-t-30 p-l-15 p-r-15 respon3">
+        <h4 class="s-text12 p-b-30">
+          Newsletter
+        </h4>
+
+        <form>
+          <div class="effect1 w-size9">
+            <input class="s-text7 bg6 w-full p-b-5" type="text" name="email" placeholder="email@example.com">
+            <span class="effect1-line"></span>
+          </div>
+
+          <div class="w-size2 p-t-20">
+            
+            <button class="flex-c-m size2 bg4 bo-rad-23 hov1 m-text3 trans-0-4">
+              Subscribe
+            </button>
+          </div>
+
+        </form>
+      </div> -->
+    </div>
+  </div>
+
+  <div id="footer-main">
+    <div class="container">
+      <div class="row">
+        <br>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-sm-6">
+          
+        </div>
+        <div class="col-sm-6">
+          
+        </div>
+        <hr>
+        <a style="margin-left: 1rem">Copyright Callidon Group Inc, 2024. All Rights reserverd</a>
+      </div>
+    </div>
+  </div>
+</footer>

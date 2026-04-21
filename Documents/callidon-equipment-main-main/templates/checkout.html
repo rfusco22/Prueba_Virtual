@@ -1,0 +1,166 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <div class="container">
+  <div class="py-5 text-center">
+  </div>
+
+  <div class="row">
+
+
+    <div class="col-md-8 order-md-1 card" >
+    	
+      <form method="POST" class="needs-validation" novalidate onload="toggleShippingAddress()">
+      	{% csrf_token %}
+        <h4 class="mb-3" style=" margin-top: 26px;">Billing address</h4>
+        <div class="mb-3">
+          <label for="name">Name</label>
+          {{ form.bill_name }}
+        </div>
+        <div class="mb-3">
+          <label for="address">Address</label>
+          {{ form.bill_street_address }}
+        </div>
+
+        <div class="mb-3">
+          <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
+          {{ form.bill_apartment_address }}
+        </div>
+
+        <div class="row">
+          <div class="col-md-5 mb-3">
+            <label for="country">Country</label>
+           		{{ form.bill_country }}
+            <div class="invalid-feedback">
+              Please select a valid country.
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="city">City</label>
+            {{ form.bill_city }}
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="state">State</label>
+            {{ form.bill_state }}
+            <script language="javascript">print_country("id_bill_country");</script>
+            <div class="invalid-feedback">
+              Please provide a valid state.
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="zip">Zip</label>
+            {{ form.bill_zip }}
+            <div class="invalid-feedback">
+              Zip code required.
+            </div>
+          </div>
+        </div>
+        <div class="custom-control custom-checkbox">
+          {{ form.local_pickup }}
+          <!-- <input type="checkbox" class="custom-control-input" id="id_local_pickup" onchange="toggleShippingAddress()"> -->
+          <label class="custom-control-label" for="id_local_pickup">Local Pickup</label>
+        </div>
+        <div id="shipping_wrapper">
+          <div class="custom-control custom-checkbox">
+            {{ form.same_shipping_address }}
+            <!-- <input checked type="checkbox" class="custom-control-input" id="id_same_shipping_address" onchange="toggleShippingAddress()"> -->
+            <label class="custom-control-label" for="id_same_shipping_address">Shipping address is the same as my billing address</label>
+          </div>
+          <div id="shipping_address_wrapper" style="display: none;">
+            <h4 class="mb-3" style=" margin-top: 26px;">Shipping address</h4>
+            <div class="mb-3">
+              <label for="name">Name</label>
+              {{ form.ship_name }}
+            </div>
+            <div class="mb-3">
+              <label for="address">Address</label>
+              {{ form.ship_street_address }}
+            </div>
+
+            <div class="mb-3">
+              <label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
+              {{ form.ship_apartment_address }}
+            </div>
+
+            <div class="row">
+              <div class="col-md-5 mb-3">
+                <label for="country">Country</label>
+                  {{ form.ship_country }}
+                <div class="invalid-feedback">
+                  Please select a valid country.
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="city">City</label>
+                {{ form.ship_city }}
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="state">State</label>
+                {{ form.ship_state }}
+                <script language="javascript">print_country("id_ship_country");</script>
+                <div class="invalid-feedback">
+                  Please provide a valid state.
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="zip">Zip</label>
+                {{ form.ship_zip }}
+                <div class="invalid-feedback">
+                  Zip code required.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          function toggleShippingAddress() {
+            local_pickup = document.getElementById('id_local_pickup')
+            div = document.getElementById('shipping_wrapper');
+            if (local_pickup.checked) {
+              div.style = 'display: none;'
+            } else {
+              div.style = 'display: block;'
+            }
+            same_shipping_address = document.getElementById('id_same_shipping_address');
+            div = document.getElementById('shipping_address_wrapper');
+            if (same_shipping_address.checked) {
+              div.style = 'display: none;';
+            } else {
+              div.style = 'display: block;';
+            }
+          }
+        </script>
+
+        <hr class="mb-4">
+
+        <h4 class="mb-3">Payment</h4>
+        <p>Payment must be done via Wire Transfer. Instructions will be provided with Invoice via email</p>
+        
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Review Order</button>
+        <br>
+      </form>
+    </div>
+
+    {% include "order_snippet.html" %}
+
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <!-- <p class="mb-1">&copy; 2024 Callidon Group Inc</p>
+    <ul class="list-inline">
+      <li class="list-inline-item"><a href="#">Privacy</a></li>
+      <li class="list-inline-item"><a href="#">Terms</a></li>
+      <li class="list-inline-item"><a href="#">Support</a></li>
+    </ul> -->
+  </footer>
+</div>
+{% endblock content %}

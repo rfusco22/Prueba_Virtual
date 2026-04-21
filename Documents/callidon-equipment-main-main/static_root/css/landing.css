@@ -1,0 +1,402 @@
+/*!
+ * This code is built by WebSell Corporation C.A.
+ * 
+ * see: https://thewebsell.com
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + .75rem + 2px);
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da !important;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+#footer-main {
+  background: #000;
+  color: white;
+  font-size: 0.8rem;
+  padding: 2.5rem 0;
+  font-family: 'Lato', sans-serif;
+  width: 100%;
+  position: relative;
+  bottom: 0px;
+  left: 0px;
+}
+
+#footer-main a {
+  font-size: 14px;
+  display: block;
+  margin: 0.3rem;
+  color: grey;
+}
+
+#footer-main a:hover {
+  font-weight: bold;
+  color: white;
+}
+
+#footer-main h6 a {
+  color: white;
+}
+
+#footer-top {
+  width: 100%;
+  position: relative;
+  bottom: 0px;
+  left: 0px;
+}
+
+#footer-main hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid white;
+}
+
+#footer-main img {
+	margin-right: 0.6rem;
+}
+
+.main-section {
+  position: relative;
+  width: 100%;
+  height: 550px;
+  box-sizing: border-box;
+}
+
+.section-filled {
+  padding-top: 150px;
+  padding-bottom: 170px;
+}
+
+.main-section h1,
+.main-section h2,
+.main-section h3,
+.main-section h4,
+.main-section h5,
+.main-section h6,
+.main-section p  {
+  color: white;
+}
+
+.section-featured-bgimage {
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.80) 25%,
+    rgba(0, 0, 0, 0) 100%
+  ),
+  url('/static/images/image-banner-landing.webp');
+  background-size: cover;
+  background-position: right;
+}
+
+.section-air-compressors {
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.80) 25%, rgba(0, 0, 0, 0) 100%),
+    url('/media/highest-quality-used-power-generator-air-compressor-for-sale--hero-2.webp') !important;
+}
+
+.callidon-btn-orange {
+  background-color: var(--callidon-orange) !important;
+}
+
+.callidon-btn-orange:hover,
+.callidon-btn-orange:focus {
+  background-color: var(--callidon-orange-hover) !important;
+}
+
+.callidon-btn-gray {
+  background-color: var(--callidon-gray) !important;
+}
+
+.callidon-btn-gray:hover, 
+.callidon-btn-gray:focus {
+  background-color: var(--callidon-gray-hover) !important;
+}
+
+.callidon-btn-gray.outlined {
+  border: 1px solid var(--callidon-gray) !important;
+  color: var(--callidon-gray) !important;
+  background-color: white !important;
+  font-weight: 900;
+}
+
+.callidon-btn-gray.outlined:hover,
+.callidon-btn-gray.outlined:focus {
+  border: 1px solid var(--callidon-gray-hover) !important;
+  color: var(--callidon-gray-hover) !important;
+  background-color: #f2f2f2 !important;
+}
+
+.callidon-card {
+  background-color: white;
+}
+
+.callidon-card:hover {
+  background-color: #f2f2f2;
+}
+
+.callidon-info-card {
+  padding: 15px 40px !important;
+  background-color: var(--callidon-gray);
+  color: white;
+  border: none;
+}
+
+a.callidon-info-card:hover {
+  background-color: var(--callidon-orange-hover);
+}
+
+.callidon-info-card i, 
+.callidon-info-card span, 
+.callidon-info-card p,
+.callidon-info-card:hover i, 
+.callidon-info-card:hover span, 
+.callidon-info-card:hover p {
+  color: white;
+}
+
+.callidon-iframe {
+  height: 100%;
+}
+
+.callidon-article-heading {
+  display: block;
+  color: black;
+}
+
+.callidon-paragraph {
+  font-size: 0.90rem;
+}
+
+.callidon-article-heading-link {
+  text-decoration: none;
+}
+
+.callidon-article-heading-link:hover {
+  color: var(--callidon-orange);
+}
+
+.callidon-article-title--level-2 {
+  font-size: 1.6rem;
+}
+
+.callidon-article-title--level-3 {
+  font-size: 1.4rem;
+}
+
+.callidon-form-check {
+  width: 0px;
+  height: 0px;
+  margin-right: 30px;
+}
+
+.callidon-form-check::before {
+  position: absolute;
+  content: "";
+  font-size: 10pt;
+  text-align: center;
+  top: 0;
+  height: 20px;
+  width: 20px;
+  background-color: white;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+}
+
+.callidon-form-check:checked::before {
+  content: "✔";
+  background-color: var(--callidon-orange);
+}
+
+.shadowed-text {
+  text-shadow: 0 0 7px black;
+}
+
+.nowrap-text {
+  white-space: nowrap;
+}
+
+/* Styles for sm */
+@media ( max-width: 480px ) {
+  .section-filled {
+    padding-top: 60px;
+    padding-bottom: 120px;
+  }
+
+  h2 {
+    font-size: 1.30rem;
+  }
+
+  h3 {
+    font-size: 1.05rem;
+  }
+
+  p, .btn-lg {
+    font-size: 0.9rem !important;
+  }
+
+  .sm\:w-100 {
+    width: 100% !important;
+  }
+
+  .sm\:w-50 {
+    width: 50% !important;
+  }
+}
+
+/* Styles for md */
+@media ( max-width: 768px ) {
+  .section-air-compressors {
+    background-image:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.60) 25%, rgba(0, 0, 0, 0) 100%),
+      url('/media/highest-quality-used-power-generator-air-compressor-for-sale--hero-4-mobile.webp') !important;
+  }
+
+  .section-filled {
+    padding-top: 60px;
+    padding-bottom: 120px;
+  }
+
+  .main-section {
+    width: 100%;
+    height: 85vh;
+  }
+
+  .main-section h1 {
+    font-size: 1.65rem;
+  }
+
+  .main-section p {
+    font-size: .9rem;
+  }
+
+  .btn-lg {
+    font-size: .9rem;
+  }
+
+  .md\:w-100 {
+    width: 100% !important;
+  }
+
+  .md\:w-50 {
+    width: 50% !important;
+  }
+
+  .callidon-btn-gray {
+    background-color: var(--callidon-gray);
+  }
+
+  .md\:column-reverse {
+    flex-direction: column-reverse;
+  }
+}
+
+
+/* ----------------- */
+/* faq functionality */
+/* ----------------- */
+
+input[type="checkbox"].question-checkbox,
+input[type="radio"].question-checkbox {
+  margin: 4px 0 0;
+  margin-top: 1px \ 9;
+  line-height: normal;
+  display: none;
+}
+
+.question-wrap {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.question-wrap > .answer {
+  display: block;
+  padding: 0 1em;
+  max-height: 0;
+  overflow: hidden;
+  background-color: white;
+  transition: all 125ms linear;
+}
+
+.question-wrap > .question-checkbox:checked ~ .answer {
+  padding: 1em;
+  max-height: 500px;
+  border: 1px solid var(--callidon-gray-active);
+  border-top: transparent;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+/* ----------- */
+/* faq styling */
+/* ----------- */
+.faq {
+  /* max-width: 600px; */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+  padding: 20px 0;
+}
+
+/* faq styling question */
+.question-wrap > .question-label {
+  background-color: var(--callidon-orange);
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  align-items: center;
+  color: white;
+  padding: 1em;
+  user-select: none;
+  cursor: pointer;
+  transition: background-color 250ms ease;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.question-wrap > .question-label:hover {
+  background-color: var(--callidon-orange-hover);
+}
+
+.question-wrap > .question-checkbox:checked ~ .question-label {
+  background-color: var(--callidon-gray-active);
+}
+
+.question-wrap > .question-label::after {
+  font-family: FontAwesome;
+  content: "\f055";
+  transition: transform 250ms ease;
+}
+.question-wrap > .question-checkbox:checked ~ .question-label::after {
+  font-family: FontAwesome;
+  content: "\f056";
+}
+
+.question-wrap > .question-checkbox:checked ~ .question-label::after {
+  transform: rotate(-180deg);
+}
+
+/* .container.websell-faq {
+  display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: nowrap;
+} */

@@ -1,0 +1,744 @@
+{% extends 'product-page.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load product_image_template_tags %}
+{% load category_template_tags %}
+{% block content %}
+<div id="image-modal" class="modal">
+    <button class="modal-close-btn" onclick="document.getElementById('image-modal').style.display='none'; document.getElementById('video-modal').style.display='none';">&times;</button>
+    <button class="modal-arrow-btn prev" onclick="setPrevImg();">&#10094;</button>
+    <button class="modal-arrow-btn next" onclick="setNextImg();">&#10095;</button>
+    <div class="top-padding"></div>
+    <img class="modal-content-custom" id="modal-image">
+</div>
+
+<div id="video-modal" class="modal">
+    <button class="modal-close-btn" onclick="document.getElementById('image-modal').style.display='none'; document.getElementById('video-modal').style.display='none';">&times;</button>
+    <button class="modal-arrow-btn prev" onclick="setPrevImg();">&#10094;</button>
+    <button class="modal-arrow-btn next" onclick="setNextImg();">&#10095;</button>
+    <div class="top-padding"></div>
+    <video class="modal-content-custom" controls="controls" preload="metadata" id="modal-video">
+        <source src="" type="video/mp4">
+    </video>
+</div>
+
+<!-- breadcrumb -->
+<div class="bread-crumb bgwhite flex-w p-l-52 p-r-15 p-t-30 p-l-15-sm">
+    <a href="/" class="s-text16">
+        Home
+        <i class="fa fa-angle-right m-l-8 m-r-9" aria-hidden="true"></i>
+    </a>
+
+    <a href="/inventory?category={{ object.category.title }}" class="s-text16">
+        {{ object.category }}
+        <i class="fa fa-angle-right m-l-8 m-r-9" aria-hidden="true"></i>
+    </a>
+
+    <span class="s-text17">
+        {{object.title}}
+    </span>
+</div>
+
+<!-- Product Detail -->
+<div class="container bgwhite p-t-35">
+    <div class="flex-w flex-sb">
+        <div class="w-size13 p-t-30 respon5">
+            <div class="wrap-slick3 flex-sb flex-w">
+                <div class="wrap-slick3-dots" style="height:700px; overflow-y:auto;"></div>
+
+                <div class="slick3">
+                    {% product_images object %}
+                </div>
+            </div>
+        </div>
+
+        <script>			
+            // Get the modal
+            var imageModal = document.getElementById("image-modal");
+            var videoModal = document.getElementById("video-modal");
+            var imgs = document.getElementsByClassName("slideshow-img")
+            var currIdx = 0;
+            var numImgs = imgs.length;
+            var modalImg = document.getElementById("modal-image");
+            var modalVideo = document.getElementById("modal-video");
+            var vid = document.getElementById("listing-video");
+            if (vid != null) {
+                numImgs += 1;
+            }
+
+            function displayMedia(idx) {
+                if ((vid != null) && (currIdx == (numImgs - 1))) {
+                    console.log("setting video modal");
+                    imageModal.style.display = "none";
+                    videoModal.style.display = "block";
+                } else {
+                    console.log("setting image modal");
+                    modalImg.src = imgs[currIdx].src;
+                    imageModal.style.display = "block";
+                    videoModal.style.display = "none";
+                }
+            }
+
+            function loadmodal(idx) {
+                console.log("loadmodal(" + idx + ")");
+                currIdx = idx;
+                modalImg.src = imgs[idx].src;
+                if (vid != null) {
+                    modalSource = modalVideo.getElementsByTagName("source")[0];
+                    source = vid.getElementsByTagName("source")[0];
+                    console.log(source.src);
+                    modalSource.src = source.src;
+                    console.log(modalSource.src);
+                    modalVideo.load();
+                }
+                displayMedia(idx);
+            }
+
+            function setNextImg() {
+                if (!isModalOn()) {
+                    return;
+                }
+                currIdx = (currIdx + 1) % numImgs;
+                displayMedia(currIdx);
+            }
+
+            function setPrevImg() {
+                if (!isModalOn()) {
+                    return;
+                }
+                currIdx = currIdx - 1;
+                if (currIdx < 0) {
+                    currIdx += numImgs;
+                }
+                displayMedia(currIdx);	
+            }
+
+            function isModalOn() {
+                return ((imageModal.style.display == "block") ||
+                    (videoModal.style.display == "block"));
+            }
+            
+            document.addEventListener('keydown', function(e) {
+                switch(event.key) {
+                    case "Escape":
+                        imageModal.style.display = "none";
+                        videoModal.style.display = "none";
+                        break;
+                    case 'ArrowLeft':
+                    case 'ArrowUp':
+                        setPrevImg();
+                        break;
+                    case 'ArrowRight':
+                    case 'ArrowDown':
+                        setNextImg();
+                        break;
+                    default:
+                        // Do nothing for other keys
+                        break;
+                }
+            });
+
+            var touchStartX = null;
+
+            // Add touch start event listener
+            document.addEventListener('touchstart', function(event) {
+                touchStartX = event.touches[0].clientX;
+            });
+
+            // Add touch end event listener
+            document.addEventListener('touchend', function(event) {
+                if (touchStartX !== null) {
+                    var touchEndX = event.changedTouches[0].clientX;
+                    var deltaX = touchEndX - touchStartX;
+
+                    // Check swipe gestures
+                    if (deltaX > 50) { 
+                        setPrevImg();
+                    } else if (deltaX < -50) {
+                        setNextImg();
+                    }
+
+                    touchStartX = null;
+                }
+            });
+            
+        </script>
+
+        <div class="w-size14 p-t-30 respon5">
+            {% if object.label == 'U' %}
+            <h4 class="product-detail-name m-text16 p-b-13" style="color: crimson;">
+                <strong>SOLD</strong>
+            </h4>
+            {% elif object.label == 'S' %}
+            <h4 class="product-detail-name m-text16 p-b-13" style="color: rgb(228, 140, 33);">
+                <strong>SALE</strong>
+            </h4>
+            {% endif %}
+            <h1 class="product-detail-name m-text16 p-b-13">
+                {{ object.title }}
+            </h1>
+            <div class="warranty-tags-container">
+                <div class="warranty-tag ready-to-work">
+                    READY TO WORK
+                </div>
+                <a href="/warranty/" class="warranty-tag thirty-day">
+                    30-DAY WARRANTY
+                </a>
+                {% if object.is_warranty_eligible %}
+                <a href="/warranty/" class="warranty-tag extended">
+                    EXTENDED WARRANTY AVAILABLE
+                </a>
+                {% endif %}
+            </div>
+            {% if object.discount_price_str %}
+            <span class="block2-oldprice m-text16-st p-b-13" style="color: black;">
+                ${{ object.price_str }}
+            </span>
+
+            <span class="block2-newprice m-text16-or p-b-13">
+                ${{ object.discount_price_str }}
+            </span>
+            <br>
+            {% else %}
+            <h4 class="product-detail-name m-text16 p-b-13">
+                ${{ object.price_str }}
+            </h4>
+            {% endif %}
+
+            <!-- Product Specifications Table -->
+            <div class="product-specs-table p-b-20">
+                <h5 class="m-text19 trans-0-4 p-b-15"><strong>Equipment Specifications</strong></h5>
+                <table class="table table-bordered table-sm" style="background-color: #f8f9fa; margin-bottom: 0;">
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 600; width: 40%; background-color: #e9ecef;"><strong>SKU</strong></td>
+                            <td>{{ object.stock_no }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; background-color: #e9ecef;"><strong>Make</strong></td>
+                            <td>{{ object.make }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; background-color: #e9ecef;"><strong>Model</strong></td>
+                            <td>{{ object.model }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; background-color: #e9ecef;"><strong>Year</strong></td>
+                            <td>{{ object.year }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; background-color: #e9ecef;"><strong>Operating Hours</strong></td>
+                            <td>{{ object.hours|default:"N/A" }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; background-color: #e9ecef;"><strong>Engine</strong></td>
+                            <td>{{ object.engine }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600; background-color: #e9ecef;"><strong>Weight</strong></td>
+                            <td>{{ object.weight|default:"N/A" }} lbs</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- <br> -->
+
+            <div class="w-size16 flex-m flex-w">
+                {% if object.label == 'U' %}
+                <button class="btn btn-primary" style="margin: 2px; background-color: rgb(170, 170, 170); border-color: rgb(170, 170, 170);" disabled>
+                    Add to Order
+                </button>	
+                {% elif item_in_order %}
+                <a href="{{object.get_remove_from_cart_url}}" class="btn btn-outline-dark" style="margin: 2px;">
+                    Remove from Order
+                </a>
+                {% else %}
+                <div class="d-flex">
+                    <a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary" style="margin: 2px;">
+                        Add to Order
+                    </a>
+                </div>
+                {% endif %}
+                {% if object.label == 'U' %}
+                <button type="button" class="btn btn-primary" style="margin: 2px; background-color: rgb(170, 170, 170); border-color: rgb(170, 170, 170);" disabled>
+                    Get Freight Quote
+                </button>
+                {% else %}
+                <button type="button" class="btn btn-primary get-freight-quote-btn" style="margin: 2px;" data-item="{{ object.title }}">
+                    Get Freight Quote
+                </button>
+                {% endif %}
+                {% if object.label != 'U' %}
+                <a role="link" target="_blank" referrerpolicy="no-referrer-when-downgrade" href="https://www.paid.mazocapital.com/application/b7593cc4-b54e-47f1-99ff-f1020d152660" class="btn btn-primary" style="margin: 2px;">
+                    <span>Apply for Financing</span>
+                </a>
+                {% else %}
+                <button class="btn btn-primary" style="margin: 2px; background-color: rgb(170, 170, 170); border-color: rgb(170, 170, 170);" disabled>
+                    Apply for Financing
+                </button>
+                {% endif %}
+            </div>
+            
+            <!-- Estimated Monthly Payment -->
+            {% if object.price and object.label != 'U' %}
+            <div style="margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                <p style="margin: 0; font-size: 14px; color: #666;">
+                    <strong>Payments as low as:</strong> <span id="monthly-payment">calculating...</span>/month
+                    <button type="button" class="financing-info-icon" style="display: inline-block; width: 20px; height: 20px; background-color: #0066cc; color: white; border: none; border-radius: 50%; text-align: center; line-height: 20px; font-size: 12px; font-weight: bold; cursor: pointer; margin-left: 5px; padding: 0;" data-toggle="modal" data-target="#financingDisclaimerModal">i</button>
+                </p>
+            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const price = {{ object.price }};
+                    const monthlyPayment = (price * 0.02075).toFixed(2);
+                    document.getElementById('monthly-payment').textContent = '$' + parseFloat(monthlyPayment).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                });
+            </script>
+
+            {% endif %}
+
+            <!-- <div>
+                <form id="freight-estimate-form" method="POST" class="needs-validation" style="width: 100%;">
+                    {% csrf_token %}
+                    <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px; border-left: 4px solid #0066cc;">
+                        <h5 class="m-text19 trans-0-4"><strong>Estimate Freight Cost</strong></h5>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 250px;">
+                                <label for="zip" style="margin: 0; color: #666; font-weight: 500; white-space: nowrap;">Delivery Zip Code:</label>
+                                <div style="flex: 1; min-width: 120px;">
+                                    {{ form.zip }}
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="margin: 0; padding: 10px 30px; white-space: nowrap;" type="button" id="get-estimate-btn">Get Estimate</button>
+                        </div>
+                        <div id="estimate-result" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                            <h5 id="shipping_estimate" style="margin: 0; font-size: 18px; color: #0066cc; font-weight: bold;">
+                                <span id="estimate-value"></span><button type="button" class="freight-info-icon" style="display: inline-block; width: 18px; height: 18px; background-color: #0066cc; color: white; border: none; border-radius: 50%; text-align: center; line-height: 18px; font-size: 11px; font-weight: bold; cursor: pointer; margin-left: 10px; padding: 0; vertical-align: middle;" data-toggle="modal" data-target="#freightDisclaimerModal">i</button>
+                            </h5>
+                        </div>
+                        <div id="estimate-error" style="display: none; margin-top: 15px; padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; color: #721c24;">
+                            <p id="error-message" style="margin: 0;"></p>
+                        </div>
+                        <div id="estimate-loading" style="display: none; margin-top: 15px; color: #666;">
+                            <p style="margin: 0;"><i class="fa fa-spinner fa-spin"></i> Calculating estimate...</p>
+                        </div>
+                    </div>
+                </form>
+            </div> -->
+            <script>
+                document.getElementById('get-estimate-btn').addEventListener('click', function() {
+                    const zipInput = document.querySelector('input[name="zip"]');
+                    const zip = zipInput.value.trim();
+                    
+                    if (!zip) {
+                        document.getElementById('estimate-error').style.display = 'block';
+                        document.getElementById('error-message').textContent = 'Please enter a zip code.';
+                        document.getElementById('estimate-result').style.display = 'none';
+                        document.getElementById('estimate-loading').style.display = 'none';
+                        return;
+                    }
+
+                    document.getElementById('estimate-loading').style.display = 'block';
+                    document.getElementById('estimate-error').style.display = 'none';
+                    document.getElementById('estimate-result').style.display = 'none';
+
+                    const formData = new FormData(document.getElementById('freight-estimate-form'));
+
+                    fetch(window.location.href, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('estimate-loading').style.display = 'none';
+
+                        if (data.success) {
+                            document.getElementById('estimate-value').textContent = data.formatted_cost;
+                            document.getElementById('estimate-result').style.display = 'block';
+                            document.getElementById('estimate-error').style.display = 'none';
+                        } else {
+                            document.getElementById('error-message').textContent = data.error || 'Unable to calculate estimate. Please try again.';
+                            document.getElementById('estimate-error').style.display = 'block';
+                            document.getElementById('estimate-result').style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('estimate-loading').style.display = 'none';
+                        document.getElementById('error-message').textContent = 'An error occurred: ' + error;
+                        document.getElementById('estimate-error').style.display = 'block';
+                        document.getElementById('estimate-result').style.display = 'none';
+                    });
+                });
+            </script>
+
+            
+        </div>
+    </div>
+</div>
+
+<!-- Description Section - Below the main content -->
+<div class="container bgwhite p-t-35">
+    <div class="row">
+        <div class="col-12">
+            <div class="bo6 p-t-15 p-b-14">
+                <h5 class="m-text19 trans-0-4 p-b-15"><strong>Description</strong></h5>
+
+                <div class="p-t-15 p-b-23" style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; border-left: 4px solid #8c9195;">
+                    <p class="s-text8" style="margin: 0; line-height: 1.6; white-space: pre-wrap; font-size: 16px;">{{ object.description }}</p>
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+<!-- Relate Product -->
+
+<section class="newproduct bgwhite p-t-45 p-b-105">
+    <div class="container" style="padding-bottom: 60px;">
+        <div class="sec-title p-b-60">
+            <h3 class="m-text5 t-center">
+                You may also like
+            </h3>
+        </div>
+
+        <!-- Slide2 -->
+        <div class="wrap-slick2">
+            <div class="slick2">
+
+                {% for item in object_list %}
+                
+                <div class="item-slick2 p-l-15 p-r-15">
+                    <!-- Block2 -->
+                    <div class="block2">
+                        
+                        <div class="block2-img wrap-pic-w of-hidden pos-relative block2-label{{item.get_label_display}}"
+                            style="display: flex; justify-content: center; align-items: center;">
+                            <a href="{{item.get_absolute_url}}" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
+                            <img src="{{ item.image1.url }}" alt="IMG-PRODUCT" style="height: 360px; width: auto;"></a>
+                            
+                            <!-- Price Display -->
+                            <div style="position: absolute; top: 0; left: 0; background-color: rgba(0, 0, 0, 0.75); padding: 8px 12px; z-index: 10;">
+                                {% if item.discount_price_str %}
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <span style="color: #ccc; font-size: 12px; text-decoration: line-through;">
+                                        ${{ item.price_str }}
+                                    </span>
+                                    <span style="color: #ff6b6b; font-size: 16px; font-weight: bold;">
+                                        ${{ item.discount_price_str }}
+                                    </span>
+                                </div>
+                                {% else %}
+                                <span style="color: white; font-size: 16px; font-weight: bold;">
+                                    ${{ item.price_str }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Warranty Badge and Status Labels -->
+                            <div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; gap: 5px; z-index: 15; align-items: flex-end;">
+                                <!-- Warranty Badge -->
+                                <div style="background-color: rgba(0, 0, 0, 0.9); padding: 8px; border-radius: 3px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                    <img src="/media/lim_warr_badge.png" alt="Warranty Badge" style="height: 100px; width: auto; display: block;">
+                                </div>
+                                <!-- Status Label (Sale/Sold/New) will appear here via CSS class -->
+                            </div>
+                            
+                            <div class="block2-overlay">
+                                <div class="block2-overlay-table-container">
+                                    <table class="block2-overlay-table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="label">Year:</td>
+                                                <td class="value">{{item.year|default:"N/A"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label">Make:</td>
+                                                <td class="value">{{item.make|default:"N/A"}}</td>
+                                            </tr>
+                                            {% if item.category.title == "Diesel Generators" %}
+                                            <tr>
+                                                <td class="label">Engine:</td>
+                                                <td class="value">{{item.engine|default:"N/A"}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                    <table class="block2-overlay-table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="label">Model:</td>
+                                                <td class="value">{{item.model|default:"N/A"}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="label">Hours:</td>
+                                                <td class="value">{{item.hours|default:"N/A"}}</td>
+                                            </tr>
+                                            {% if item.category.title == "Diesel Generators" %}
+                                            <tr>
+                                                <td class="label">Capacity:</td>
+                                                <td class="value">{{item.title|regex_extract:"(\d+(?:\.\d+)?)\s*(kW|kVA)"|default:"N/A"}}</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <div class="block2-txt p-t-20">
+                            <a href="{{item.get_absolute_url}}" class="block2-name dis-block s-text3 p-b-5" style="color: black;">
+                                {{ item.title }}
+                            </a>
+
+                            {% if item.discount_price_str %}
+                            <span class="block2-oldprice m-text7 p-r-5" style="color: black;">
+                                ${{ item.price_str }}
+                            </span>
+
+                            <span class="block2-newprice m-text8 p-r-5">
+                                ${{ item.discount_price_str }}
+                            </span>
+                            {% else %}
+                            <span class="block2-price m-text6 p-r-5" style="color: black;">
+                                ${{ item.price_str }}
+                            </span>
+                            {% endif %}
+                            
+
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+            
+                {% endfor %}
+
+                
+            
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" style="z-index: 5500;" id="autoLeadsModal" tabindex="-1" role="dialog" aria-labelledby="autoLeadsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <form method="POST" action="/autoleads-collect/" id="leads_form">
+        {% csrf_token %}
+        <input type="hidden" id="commodity" name="commodity" value="{{ object.title }}"/>
+        <input type="hidden" id="product" name="product" value="{{ object.slug }}"/>
+        <div class="modal-header">
+            <h5 class="modal-title" id="autoLeadsModalLabel">
+                Get freight quote for:<br/> <b>{{ object.title }}</b>
+            </h5>
+        </div>
+        <div class="modal-body">
+            <div class="form-row">
+                <div class="form-group col-md-6 col-6">
+                    <label for="name">Full name</label>
+                    <input type="text" class="form-control" id="name" name="name" aria-describedby="name" placeholder="Jhon Doe" required/>
+                </div>
+                <div class="form-group col-md-6 col-6">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="jhon@example.com" required/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" id="city" name="city" aria-describedby="city" placeholder="New York"/>
+                </div>
+                <div class="form-group col-md-4 col-6">
+                    <label for="phone">Phone number</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="+1 (XXX) XXX-XXXX">
+                </div>
+                <div class="form-group col-md-2 col-6">
+                    <label for="zip">Zip code</label>
+                    <input type="number" min="0" class="form-control" id="zip" name="zip" placeholder="XXXXX">
+                </div>
+            </div>
+            <div class="advice">
+                <small class="text-muted">
+                    We'll never share your personal information with anyone else.
+                </small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">
+                Send
+            </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Financing Disclaimer Modal -->
+<div class="modal fade" style="z-index: 5500;" id="financingDisclaimerModal" tabindex="-1" role="dialog" aria-labelledby="financingDisclaimerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="financingDisclaimerModalLabel">
+          Financing Information
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 14px; line-height: 1.6; color: #333;">
+          Payment assumes a secured commercial loan transaction with highly qualified applicants, not all applicants will be eligible. Commercial financing provided or arranged by Mazo Capital, LLC dba Mazo Capital Solutions pursuant to California Finance Lender License#60DBO-155151. Equal opportunity lender. Applicant credit profile including FICO is used for credit review. Actual terms available may vary depending on applicant and/or guarantor credit profile(s), equipment type and additional approval conditions. Assets aged 10-15 years or more may require increased finance charges. Financing approval will require pledge of collateral as security.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Freight Estimator Disclaimer Modal -->
+<div class="modal fade" style="z-index: 5500;" id="freightDisclaimerModal" tabindex="-1" role="dialog" aria-labelledby="freightDisclaimerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="freightDisclaimerModalLabel">
+          Freight Estimator Disclaimer
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 14px; line-height: 1.6; color: #333;">
+          This Freight Estimator tool calculates an estimate of the cost to ship an item within the United States based on historical pricing for similar shipments. Callidon Equipment is providing customers this tool as a convenience and for informational purposes only. This estimate is not a quote nor a binding agreement between you and Callidon Equipment. Callidon Equipment is not responsible for any discrepancies between the estimate provided by the tool and the actual total cost to ship an item. A formal transportation quote can be provided upon request by clicking on "Get Freight Quote", or it will be provided after order placement if the order is not for local pickup.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [{
+        "@type": ["LocalBusiness", "Organization"],
+        "@id": "https://callidonequipment.com/#organization",
+        "name": "Callidon Equipment",
+        "url": "https://callidonequipment.com",
+        "telephone": "(786)674-1345",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Miami",
+            "addressRegion": "FL",
+            "postalCode": "33142",
+            "streetAddress": "5790 NW 35th Ave",
+            "image": "https://callidonequipment.com/static/images/callidon_media/CALLIDON_LOGO.png"
+        }
+        }],
+        "@type": "Product",
+        "brand": {
+        "@type": "Brand",
+        "name": "{{ object.make }}"
+        },
+        "description": "{{ object.description }}",
+        "name": "{{ object.title }}",
+        "image": "{{ object.image1.url }}",
+        "offers": {
+        "@type": "Offer",
+        "availability": "https://schema.org/InStock",
+        "price": "{{ object.price }}",
+        "priceCurrency": "USD",
+        "priceValidUntil": "2030-12-31",
+        "itemCondition": "RefurbishedCondition",
+        "url": "https://callidonequipment.com/inventory/{{ object.slug }}",
+        "seller": {
+            "@type": "Organization",
+            "@id": "https://callidonequipment.com/",
+            "name": "Callidon Equipment",
+            "url": "https://callidonequipment.com",
+            "logo": "https://callidonequipment.com/static/images/callidon_media/CALLIDON_LOGO.png"
+        }
+        },
+        "category": "{{ object.category }}",
+        "sku": "{{ object.stock_no }}",
+        "url": "https://callidonequipment.com/inventory/{{ object.slug }}",
+        "manufacturer": {
+        "@type": "Organization",
+        "name": "{{ object.make }}"
+        }
+    }
+</script>
+
+<!-- Container Selection -->
+<div id="dropDownSelect1"></div>
+<div id="dropDownSelect2"></div>
+
+<div id="fms-modal-backdrop" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.55); align-items:center; justify-content:center;">
+    <div id="fms-modal-box" style="background:#fff; border-radius:8px; box-shadow:0 8px 40px rgba(0,0,0,0.25); width:calc(100% - 32px); max-width: 620px; position:relative; overflow:hidden;">
+        <iframe id="fms-modal-iframe" src="" style="width: 100%; border:none; display:block; transition: height .2s;" height="420" scrolling="no" title="Get Freight Quote"></iframe>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // URL base según la guía oficial 
+    var FMS_BASE = "https://freightmanagersystem.com/embedded-quote-callidon-product";
+    var backdrop = document.getElementById("fms-modal-backdrop");
+    var iframe = document.getElementById("fms-modal-iframe");
+
+    function openModal(itemName) {
+        // Se añade el parámetro 'item' requerido por el sistema
+        iframe.src = FMS_BASE + "?item=" + encodeURIComponent(itemName);
+        backdrop.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+        backdrop.style.display = "none";
+        document.body.style.overflow = "";
+        iframe.src = "";
+    }
+
+    // Cerrar al hacer click fuera o presionar Escape
+    if (backdrop) {
+        backdrop.addEventListener("click", function (e) { if (e.target === backdrop) closeModal(); });
+    }
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+
+    // Escuchar eventos de redimensionamiento enviados por el iframe
+    window.addEventListener("message", function (event) {
+        if (!event.data || typeof event.data !== "object") return;
+        if (event.data.type === "resize" && event.data.height) {
+            iframe.style.height = event.data.height + "px";
+        }
+        if (event.data.type === "callidon:close") {
+            closeModal();
+        }
+    });
+
+    // Interceptar click en botones con el atributo data-item
+    document.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-item]");
+        if (!btn) return;
+        
+        var itemName = btn.getAttribute("data-item") || "";
+        e.preventDefault();
+        openModal(itemName);
+    });
+});
+</script>
+{% endblock content %}

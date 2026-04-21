@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="warranty-hero flex-col-c-m">
+    <h1 class="l-text2 t-center">
+        Warranty Protection
+    </h1>
+    <p class="m-text13 t-center" style="color: white; margin-top: 15px;">
+        Peace of mind on every purchase
+    </p>
+</section>
+
+<div class="warranty-intro">
+    <div class="container">
+        <div class="warranty-intro-content">
+            <h2>We Stand Behind Our Equipment</h2>
+            <p>
+                At Callidon Equipment, we're committed to your satisfaction. All our equipment comes with a 30-day limited parts warranty 
+                as standard. We recommend considering an extended warranty if your equipment qualifies. Our warranty programs 
+                are designed to protect your investment and give you peace of mind.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="warranty-options">
+    <div class="container">
+        <h2>Warranty Options</h2>
+        
+        <div class="warranty-cards-container">
+            <!-- 30-Day Standard Warranty Card -->
+            <div class="warranty-card standard">
+                <div class="warranty-badge included">✓ Included</div>
+                <h3>30-Day Limited Parts Warranty</h3>
+                <p>
+                    Included with every purchase as our commitment to quality. Covers the cost of parts that break due to normal use within the first 30 days.
+                </p>
+                
+                <div class="warranty-highlights">
+                    <strong>Coverage Period: 30 Days from Purchase</strong>
+                </div>
+                
+                <strong style="color: #333; display: block; margin-bottom: 10px;">What's Covered:</strong>
+                <ul class="warranty-features">
+                    <li>Cost of parts that break with normal use within warranty limits</li>
+                    <li>Shipping costs for warranty parts</li>
+                </ul>
+                
+                <strong style="color: #333; display: block; margin: 20px 0 10px 0; border-top: 1px solid #ddd; padding-top: 15px;">Not Included:</strong>
+                <ul class="warranty-limitations">
+                    <li>Labor or installation costs</li>
+                    <li>Normal wear and tear</li>
+                    <li>Misuse or improper maintenance</li>
+                </ul>
+            </div>
+            
+            <!-- Extended Warranty Card -->
+            <div class="warranty-card extended">
+                <div class="warranty-badge optional">Optional Upgrade</div>
+                <h3>Extended Warranty</h3>
+                <p>
+                    Additional protection for eligible used equipment. Available for items meeting specific age and operating hour requirements.
+                </p>
+                
+                <div class="warranty-highlights">
+                    <strong>For Eligible Equipment:</strong>
+                    Under 7 years old and less than 7,000 operating hours
+                </div>
+                
+                <strong style="color: #333; display: block; margin-bottom: 10px;">Extended Coverage Includes:</strong>
+                <ul class="warranty-features">
+                    <li>Mechanical failures and breakdowns</li>
+                    <li>Parts and labor</li>
+                    <li>Multiple plan options available</li>
+                    <li>Hassle-free claims process</li>
+                    <li>Flexible terms and pricing</li>
+                </ul>
+                
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #ddd;">
+                    <p style="font-size: 12px; color: #999; margin-bottom: 15px;">
+                        Coverage details and pricing vary by equipment type and selected plan. Ask about extended warranty availability when purchasing.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="eligibility-section">
+    <div class="container">
+        <h2>Extended Warranty Eligibility</h2>
+        
+        <div class="eligibility-grid">
+            <div class="eligibility-item">
+                <h4>Equipment Age</h4>
+                <ul>
+                    <li>• Must be under 7 years old</li>
+                    <li>• Manufactured date verification required</li>
+                </ul>
+            </div>
+            
+            <div class="eligibility-item">
+                <h4>Operating Hours</h4>
+                <ul>
+                    <li>• Must have less than 7,000 hours</li>
+                    <li>• Hour meter verification included</li>
+                </ul>
+            </div>
+            
+            <div class="eligibility-item">
+                <h4>Condition Requirements</h4>
+                <ul>
+                    <li>• Equipment must be in working condition</li>
+                    <li>• Professional inspection available</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="coverage-section">
+    <div class="container">
+        <h2>Extended Warranty Coverage Options</h2>
+        
+        <div class="coverage-image">
+            <a href="/static/images/callidon_media/coverage-options.png" target="_blank">
+                <img src="/static/images/callidon_media/coverage-options.png" alt="Coverage Options">
+            </a>
+            <p style="margin-top: 20px; color: #666; font-size: 14px;">
+                Click to view full coverage options details. Multiple plans available to match your equipment and budget.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="padding-bottom:80px;">
+    <div class="contact-cta">
+        <h3>Questions About Our Warranties?</h3>
+        <p>
+            Our warranty specialists are ready to help you find the perfect coverage for your equipment.
+            Contact us today for more information or to purchase extended warranty coverage.
+        </p>
+        <a href="/contact/">Contact Our Team</a>
+    </div>
+</div>
+
+<!-- Container Selection -->
+<div id="dropDownSelect1"></div>
+<div id="dropDownSelect2"></div>
+
+{% endblock content %}

@@ -1,0 +1,69 @@
+/*!
+ * This is the custom CSS code built
+ * by WebSell Corporation C.A.
+ */
+
+.swiper {
+  width: 100%;
+  height: 340px;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: var(--callidon-orange);
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 20px;
+  background-color: var(--callidon-orange);
+  padding: 8px 12px;
+  width: 35px;
+  height: 35px;
+  color: white;
+  display: inline-block;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.testimonial-wrap {
+  width: 80%;
+  display: block;
+  margin: auto;
+  padding: 20px 40px;
+  border: 1px solid rgba(0, 0, 0, .125);
+  border-radius: .25rem;
+}
+
+.testimonial-person {
+  display: block;
+  width: 230px;
+  margin: 20px auto 10px;
+}
+
+.testimonial-person {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+
+.testimonial-person-image img {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+}
+
+.testimonial-person-name {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .swiper {
+    width: 100%;
+    height: auto;
+    padding: 30px;
+  }
+}

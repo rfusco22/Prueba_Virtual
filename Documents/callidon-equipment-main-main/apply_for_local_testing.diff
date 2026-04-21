@@ -1,0 +1,87 @@
+diff --git a/core/views.py b/core/views.py
+index 29ce2eb..6243737 100644
+--- a/core/views.py
++++ b/core/views.py
+@@ -319,6 +319,7 @@ class InventoryView(ListView):
+ def get_distance(dest_zip):
+     url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=33142&destinations=" + dest_zip + "&mode=driving&key=AIzaSyDNEH4l1ct0cf8Ol4wISNTckmr9Ww1Jxfs"
+     resp = requests.get(url).json()
++    print(str(resp))
+     dist_m = resp['rows'][0]['elements'][0]['distance']['value']
+     dist_mi = dist_m/1609.34 # convert meters to miles
+     return round(dist_mi)
+@@ -361,19 +362,19 @@ class ItemDetailView(View):
+             'item_in_order': item_in_order,
+             'meta_title': 'WebSell callidon'
+         }
+-        try:
+-            if form.is_valid():
+-                dest_zip = form.cleaned_data.get('zip')
+-                if dest_zip:
+-                    if self.request.user.is_anonymous:
+-                        messages.info(self.request, "Please log in to get shipping estimate")
+-                        return redirect("/accounts/login")
+-                    cost = get_freight_estimate(item, dest_zip)
+-                    context["shipping"] = cost
+-            else:
+-                print('ERROR: invalid form!')
+-        except:
+-            messages.info(self.request, "There was a problem with the zip code provided. Please call us for a shipping quote")
++        # try:
++        if form.is_valid():
++            dest_zip = form.cleaned_data.get('zip')
++            if dest_zip:
++                if self.request.user.is_anonymous:
++                    messages.info(self.request, "Please log in to get shipping estimate")
++                    return redirect("/accounts/login")
++                cost = get_freight_estimate(item, dest_zip)
++                context["shipping"] = cost
++        else:
++            print('ERROR: invalid form!')
++        # except:
++        #     messages.info(self.request, "There was a problem with the zip code provided. Please call us for a shipping quote")
+         return render(self.request, "product-detail.html", context)
+         
+ 
+diff --git a/db.sqlite3 b/db.sqlite3
+index c812aad..abba11d 100644
+Binary files a/db.sqlite3 and b/db.sqlite3 differ
+diff --git a/prod/settings.py b/prod/settings.py
+index 3ee07f5..98a20b5 100644
+--- a/prod/settings.py
++++ b/prod/settings.py
+@@ -2,12 +2,14 @@ import os
+ 
+ ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+ 
+-DEBUG = False  #TODO: change to false for production
++DEBUG = True  #TODO: change to false for production
+ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ SECRET_KEY = os.getenv('SECRET_KEY')
+-ALLOWED_HOSTS = ['.callidonequipment.com', '3.18.11.161', '.callidongroup.com']
+-RECAPTCHA_SITE_KEY = os.getenv('CALLIDON_RECAPTCHA_V3_SITE_KEY', '')
+-RECAPTCHA_SECRET_KEY = os.getenv('CALLIDON_RECAPTCHA_V3_SECRET_KEY', '')
++ALLOWED_HOSTS = ['localhost', '.callidonequipment.com', '3.18.11.161', '.callidongroup.com']
++# RECAPTCHA_SITE_KEY = os.getenv('CALLIDON_RECAPTCHA_V3_SITE_KEY', '')
++# RECAPTCHA_SECRET_KEY = os.getenv('CALLIDON_RECAPTCHA_V3_SECRET_KEY', '')
++RECAPTCHA_SITE_KEY='6Le01WgqAAAAAIpydD93bGTrhcqwk4Xc5c2jZ0D6'
++RECAPTCHA_SECRET_KEY='6Le01WgqAAAAAPBafQCO-aOxNyQz5ltHAxnv_gEl'
+ 
+ INSTALLED_APPS = [
+     'django.contrib.admin',
+@@ -68,11 +70,11 @@ USE_TZ = True
+  
+ STATIC_URL = '/static/'
+ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static_in_env')]
+-# STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
+-STATIC_ROOT = '/var/www/callidonequipment.com/static'
++STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
++#STATIC_ROOT = '/var/www/callidonequipment.com/static'
+ MEDIA_URL = '/media/'
+-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
+-MEDIA_ROOT = '/var/www/callidonequipment.com/media'
++MEDIA_ROOT = os.path.join(BASE_DIR, 'media_root')
++#MEDIA_ROOT = '/var/www/callidonequipment.com/media'
+ 
+ DATABASES = {
+     "default": {

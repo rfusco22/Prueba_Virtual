@@ -1,0 +1,433 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load category_template_tags %}
+{% block content %}
+
+	<!-- Title Page -->
+	<section class="bg-title-page p-t-50 p-b-40 flex-col-c-m" style="background-image: url(/static/images/callidon_wall.jpg)	;">
+		<h1 class="l-text2 t-center">
+			Inventory
+		</h1>
+		<p class="m-text13 t-center">
+			All categories
+		</p>
+	</section>
+
+	<!-- Content page -->
+	<form action="/inventory" method="GET" id="filter-form">
+	<section class="bgwhite p-t-55 p-b-65">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-md-4 col-lg-3 p-b-50">
+					<div class="leftbar p-r-20 p-r-0-sm">
+
+						<!--  -->
+						<div class="filters-header">
+							<h4 class="m-text14 p-b-32">
+								Filters
+							</h4>
+							<button type="button" class="filters-toggle-btn" id="filters-toggle"></button>
+						</div>
+						
+						<div class="filters-content" id="filters-content">
+							<div class="m-text15 p-b-17">
+								Category
+							</div>
+							
+							{% category_selector category %}
+
+						<div class="p-b-50 bo3">
+							<div class="flex-sb-m flex-w p-t-16">
+								<div class="m-text15 p-b-17" style="width: 100%;">
+									Price
+								</div>
+								<div class="slider-container" style="width: 100%;">
+									<div class="slider-value-display">
+										<span>Min: <strong id="min_price_display">$0</strong></span>
+										<span>Max: <strong id="max_price_display">$100,000</strong></span>
+									</div>
+									<div class="dual-slider-wrapper">
+										<div class="dual-slider-track"></div>
+										<div class="dual-slider-range" id="price_range"></div>
+										<input type="range" id="min_price" class="dual-slider-input" name="min_price" min="0" max="100000" step="100" value="{% if min_price %}{{ min_price }}{% else %}0{% endif %}" oninput="update_dual_slider('price')">
+										<input type="range" id="max_price" class="dual-slider-input" name="max_price" min="0" max="100000" step="100" value="{% if max_price %}{{ max_price }}{% else %}100000{% endif %}" oninput="update_dual_slider('price')">
+									</div>
+									<div class="slider-range-labels">
+										<span>$0</span>
+										<span>$100,000+</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="flex-sb-m flex-w p-t-16">
+								<div class="m-text15 p-b-17" style="width: 100%;">
+									Operating Hours
+								</div>
+								<div class="slider-container" style="width: 100%;">
+									<div class="slider-value-display">
+										<span>Min: <strong id="min_hours_display">0</strong></span>
+										<span>Max: <strong id="max_hours_display">100,000</strong></span>
+									</div>
+									<div class="dual-slider-wrapper">
+										<div class="dual-slider-track"></div>
+										<div class="dual-slider-range" id="hours_range"></div>
+										<input type="range" id="min_hours" class="dual-slider-input" name="min_hours" min="0" max="100000" step="100" value="{% if min_hours %}{{ min_hours }}{% else %}0{% endif %}" oninput="update_dual_slider('hours')">
+										<input type="range" id="max_hours" class="dual-slider-input" name="max_hours" min="0" max="100000" step="100" value="{% if max_hours %}{{ max_hours }}{% else %}100000{% endif %}" oninput="update_dual_slider('hours')">
+									</div>
+									<div class="slider-range-labels">
+										<span>0 hrs</span>
+										<span>100,000+ hrs</span>
+									</div>
+								</div>
+							</div>
+							
+							<div class="flex-sb-m flex-w p-t-16">
+								<div class="m-text15 p-b-17" style="width: 100%;">
+									Year
+								</div>
+								<div class="slider-container" style="width: 100%;">
+									<div class="slider-value-display">
+										<span>Min: <strong id="min_year_display">1980</strong></span>
+										<span>Max: <strong id="max_year_display">2025</strong></span>
+									</div>
+									<div class="dual-slider-wrapper">
+										<div class="dual-slider-track"></div>
+										<div class="dual-slider-range" id="year_range"></div>
+										<input type="range" id="min_year" class="dual-slider-input" name="min_year" min="1980" max="2025" step="1" value="{% if min_year %}{{ min_year }}{% else %}1980{% endif %}" oninput="update_dual_slider('year')">
+										<input type="range" id="max_year" class="dual-slider-input" name="max_year" min="1980" max="2025" step="1" value="{% if max_year %}{{ max_year }}{% else %}2025{% endif %}" oninput="update_dual_slider('year')">
+									</div>
+									<div class="slider-range-labels">
+										<span>1980</span>
+										<span>2025</span>
+									</div>
+								</div>
+							</div>
+
+							<br>
+							<input class="flex-c-m size4 bg4 bo-rad-15 hov1 s-text14 trans-0-4" type="submit" value="APPLY FILTERS" style="cursor: pointer; background-color: #333 !important; color: white !important;"/>
+						</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6 col-md-8 col-lg-9 p-b-50">
+					<div class="flex-sb-m flex-w p-b-35">
+						<div class="flex-w">
+
+							<div class="m-text15 p-b-17 mr-3 mt-2">
+								Order by
+							</div>
+						
+							<div class="rs2-select2 bo4 of-hidden w-size12 m-t-5 m-b-5 m-r-10" >
+								<select class="selection-2" style="width: 200px;" name="sort" id="sort" onchange="clear_empty_fields(this.form);this.form.submit();">
+									
+									{% if sort_by == "relevance" %}
+										<option value="relevance" selected="selected">Relevance</option>
+									{% else %}
+										<option value="relevance">Relevance</option>
+									{% endif %}
+									
+									{% if sort_by == "price_l2h" %}
+										<option value="price_l2h"  selected="selected">Price: low to high</option>
+									{% else %}
+										<option value="price_l2h">Price: low to high</option>
+									{% endif %}
+									
+									{% if sort_by == "price_h2l" %}
+										<option value="price_h2l" selected="selected">Price: high to low</option>
+									{% else %}
+										<option value="price_h2l">Price: high to low</option>
+									{% endif %}
+
+									{% if sort_by == "priority" %}
+										<option value="priority" selected="selected">Capacity: Low to High</option>
+									{% else %}
+										<option value="priority">Capacity: Low to high</option>
+									{% endif %}
+
+									{% if sort_by == "not_priority" %}
+										<option value="not_priority" selected="selected">Capacity: High to low</option>
+									{% else %}
+										<option value="not_priority">Capacity: High to low</option>
+									{% endif %}
+
+								</select>
+							</div>
+
+						</div>
+
+						<span class="s-text8 p-t-5 p-b-5">
+							Showing {{ num_objects }} results
+						</span>
+					</div>
+
+					<!-- Product -->
+					{% if object_list %}
+					<div class="row">
+						{% for item in object_list %}
+						<div class="col-sm-12 col-md-6 col-lg-4 p-b-50">
+							<!-- Block2 -->
+							<div class="block2">
+								<div class="block2-img wrap-pic-w of-hidden pos-relative block2-label{{item.get_label_display}}">
+									<a href="{{item.get_absolute_url}}" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
+										<img src="{{ item.image1.url }}" alt="IMG-PRODUCT" 
+											 style="height: 360px; width: auto;">
+									</a>
+									
+									<!-- Price Display -->
+									<div style="position: absolute; top: 0; left: 0; background-color: rgba(0, 0, 0, 0.75); padding: 8px 12px; z-index: 10;">
+										{% if item.discount_price_str %}
+										<div style="display: flex; gap: 8px; align-items: center;">
+											<span style="color: #ccc; font-size: 12px; text-decoration: line-through;">
+												${{ item.price_str }}
+											</span>
+											<span style="color: #ff6b6b; font-size: 16px; font-weight: bold;">
+												${{ item.discount_price_str }}
+											</span>
+										</div>
+										{% else %}
+										<span style="color: white; font-size: 16px; font-weight: bold;">
+											${{ item.price_str }}
+										</span>
+										{% endif %}
+									</div>
+									
+									<!-- Warranty Badge and Status Labels -->
+									<div style="position: absolute; top: 0; right: 0; display: flex; flex-direction: column; gap: 5px; z-index: 15; align-items: flex-end;">
+										<!-- Warranty Badge -->
+										<div style="background-color: rgba(0, 0, 0, 0.9); padding: 8px; border-radius: 3px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+											<img src="/media/lim_warr_badge.png" alt="Warranty Badge" style="height: 100px; width: auto; display: block;">
+										</div>
+										<!-- Status Label (Sale/Sold/New) will appear here via CSS class -->
+									</div>
+									
+									<div class="block2-overlay">
+										<div class="block2-overlay-table-container">
+											<table class="block2-overlay-table">
+												<tbody>
+													<tr>
+														<td class="label">Year:</td>
+														<td class="value">{{item.year|default:"N/A"}}</td>
+													</tr>
+													<tr>
+														<td class="label">Make:</td>
+														<td class="value">{{item.make|default:"N/A"}}</td>
+													</tr>
+													{% if item.category.title == "Diesel Generators" %}
+													<tr>
+														<td class="label">Engine:</td>
+														<td class="value">{{item.engine|default:"N/A"}}</td>
+													</tr>
+													{% endif %}
+												</tbody>
+											</table>
+											<table class="block2-overlay-table">
+												<tbody>
+													<tr>
+														<td class="label">Model:</td>
+														<td class="value">{{item.model|default:"N/A"}}</td>
+													</tr>
+													<tr>
+														<td class="label">Hours:</td>
+														<td class="value">{{item.hours|default:"N/A"}}</td>
+													</tr>
+													{% if item.category.title == "Diesel Generators" %}
+													<tr>
+														<td class="label">Capacity:</td>
+														<td class="value">{{item.title|regex_extract:"(\d+(?:\.\d+)?)\s*(kW|kVA)"|default:"N/A"}}</td>
+													</tr>
+													{% endif %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+
+								<div class="block2-txt p-t-20">
+									<a href="{{item.get_absolute_url}}" class="block2-name dis-block s-text3 p-b-5">
+										{{item.title}}
+									</a>
+
+									{% if item.discount_price_str %}
+									<span class="block2-oldprice m-text7 p-r-5" style="color: black;">
+										${{ item.price_str }}
+									</span>
+
+									<span class="block2-newprice m-text8 p-r-5">
+										${{ item.discount_price_str }}
+									</span>
+									{% else %}
+									<span class="block2-price m-text6 p-r-5" style="color: black;">
+										${{ item.price_str }}
+									</span>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					{% else %}
+						<h4 class="m-text12 t-center">
+							No results matching applied filters
+						</h4>
+					{% endif %}
+				
+				</div>
+				<!-- ---- row end ------- -->
+
+				<script>
+					function update_dual_slider(type) {
+						let minInput, maxInput, minDisplay, maxDisplay, rangeElement, format;
+						
+						if (type === 'price') {
+							minInput = document.getElementById('min_price');
+							maxInput = document.getElementById('max_price');
+							minDisplay = document.getElementById('min_price_display');
+							maxDisplay = document.getElementById('max_price_display');
+							rangeElement = document.getElementById('price_range');
+							format = (val) => '$' + parseInt(val).toLocaleString();
+						} else if (type === 'hours') {
+							minInput = document.getElementById('min_hours');
+							maxInput = document.getElementById('max_hours');
+							minDisplay = document.getElementById('min_hours_display');
+							maxDisplay = document.getElementById('max_hours_display');
+							rangeElement = document.getElementById('hours_range');
+							format = (val) => parseInt(val).toLocaleString();
+						} else if (type === 'year') {
+							minInput = document.getElementById('min_year');
+							maxInput = document.getElementById('max_year');
+							minDisplay = document.getElementById('min_year_display');
+							maxDisplay = document.getElementById('max_year_display');
+							rangeElement = document.getElementById('year_range');
+							format = (val) => val;
+						}
+						
+						// Ensure min doesn't exceed max and vice versa
+						let minVal = parseInt(minInput.value);
+						let maxVal = parseInt(maxInput.value);
+						
+						if (minVal > maxVal) {
+							minInput.value = maxVal;
+							minVal = maxVal;
+						}
+						if (maxVal < minVal) {
+							maxInput.value = minVal;
+							maxVal = minVal;
+						}
+						
+						// Update display values
+						minDisplay.textContent = format(minVal);
+						maxDisplay.textContent = format(maxVal);
+						
+						// Update range bar position
+						const min = parseInt(minInput.min);
+						const max = parseInt(minInput.max);
+						const minPercent = ((minVal - min) / (max - min)) * 100;
+						const maxPercent = ((maxVal - min) / (max - min)) * 100;
+						
+						rangeElement.style.left = minPercent + '%';
+						rangeElement.style.right = (100 - maxPercent) + '%';
+					}
+					
+					function update_sorting(form) {
+						category_select_field = form.querySelector('select[name="category"]');
+						sorting_select_field = form.querySelector('select[name="sort"]');
+
+						if ( category_select_field.value === 'Diesel Generators' ) {
+							sorting_select_field.value = 'priority';
+						}
+					}
+					
+					function clear_empty_fields(form) {
+						// remove empty fields
+						all_inputs = form.getElementsByTagName('input');
+						for (var j = 0; j < all_inputs.length; j++) {
+							var input = all_inputs[j];
+
+							if ( input.name && !input.value ) {
+								input.name = '';
+							}
+						}
+					}
+
+					window.onload = function() {
+						var filter_form = document.getElementById('filter-form');
+						
+						filter_form.addEventListener('submit', function () {
+							clear_empty_fields(this);
+						});
+
+						var search_filter = document.getElementById('search');
+						
+						if ( search_filter.value ) {
+							var search_input = document.createElement("input");
+							search_input.setAttribute("type", "hidden");
+							search_input.setAttribute("name", "search");
+							search_input.setAttribute("value", search_filter.value);
+							filter_form.appendChild(search_input);
+						}
+						
+						// Initialize dual sliders on page load
+						update_dual_slider('price');
+						update_dual_slider('hours');
+						update_dual_slider('year');
+						
+						// Initialize filters collapse on mobile
+						var filtersToggle = document.getElementById('filters-toggle');
+						var filtersContent = document.getElementById('filters-content');
+						
+						// Check if viewport is mobile on page load
+						function checkMobileAndSetCollapse() {
+							var isMobile = window.innerWidth <= 991;
+							if (isMobile) {
+								filtersContent.classList.add('collapsed');
+							} else {
+								filtersContent.classList.remove('collapsed');
+							}
+						}
+						
+						// Set initial state
+						checkMobileAndSetCollapse();
+						
+						// Toggle filters on button click
+						filtersToggle.addEventListener('click', function(e) {
+							e.preventDefault();
+							filtersContent.classList.toggle('collapsed');
+							filtersToggle.classList.toggle('collapsed');
+						});
+						
+						// Handle window resize
+						window.addEventListener('resize', function() {
+							checkMobileAndSetCollapse();
+						});
+					};
+					
+					
+				</script>
+
+				<br>
+				<!-- Pagination -->
+				<!-- {% if is_paginated %}
+				<div class="pagination flex-m flex-w p-t-26">
+					{% if page_obj.has_previous %}
+					<a class="page-link" href="?page={{ page_obj.previous_page_number}}" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+						<span class="sr-only">Previous</span>
+					</a>
+					{% endif %}
+					<a href="?page={{ page_obj.number }}" class="item-pagination flex-c-m trans-0-4 active-pagination">{{page_obj.number}}</a>
+					
+					
+					{% if page_obj.has_next %}
+					<a class="page-link" href="?page={{ page_obj.next_page_number}}" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+							<span class="sr-only">Next</span>
+						</a>
+						{% endif %}
+				</div>
+				{% endif %} -->
+			</div>
+		</div>
+	</section>
+</form>
+
+		{% endblock content %}

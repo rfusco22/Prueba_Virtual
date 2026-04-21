@@ -1,0 +1,37 @@
+.flt-icon-list {
+  bottom: 12%;
+  right: 6%;
+  z-index: 5000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;    
+}
+
+.flt-contact-icon {
+  background-color: #124eb7;
+  padding: 10px;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: block;
+}
+
+.flt-contact-icon:hover {
+  background-color: #002954;
+}
+
+@media screen and ( min-width: 769px ) {
+  .hidden-desktop {
+    display: none;
+  }
+}
+
+@media screen and ( max-width: 768px ) {
+  .hidden-mobile {
+    display: none;
+  }
+
+  .mobile-shown {
+    display: flex;
+  }
+}

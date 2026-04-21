@@ -1,0 +1,132 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <div class="container">
+  <div class="py-5 text-center">
+  </div>
+
+  <div class="row">
+    <h2>Review Order</h2>
+    <hr style="width: 100%;">
+
+    <div class="col-md-8 order-md-1 card" >
+      <form method="POST" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <h4 class="mb-3" style=" margin-top: 26px;">Billing address</h4>
+        <div class="mb-3">
+          <label for="name">Name</label>
+          <p>{{ order.billing_address.name }}</p>
+        </div>
+        <div class="mb-3">
+          <label for="address">Address</label>
+          <p>{{ order.billing_address.street_address }}</p>
+        </div>
+
+        {% if order.billing_address.apartment_address %}
+        <div class="mb-3">
+          <label for="address2">Address 2</label>
+          <p>{{ order.billing_address.apartment_address }}</p>
+        </div>
+        {% endif %}
+
+        <div class="row">
+          <div class="col-md-5 mb-3">
+            <label for="country">Country</label>
+            <p>{{ order.billing_address.country }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="city">City</label>
+            <p>{{ order.billing_address.city }}</p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label for="state">State</label>
+            <p>{{ order.billing_address.state }}</p>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="zip">Zip</label>
+            <p>{{ order.billing_address.zip }}</p>
+          </div>
+        </div>
+
+        {% if order.local_pickup %}
+
+        <h4 class="mb-3" style=" margin-top: 26px;">Local Pickup at 5790 NW 35th Ave, Miami, FL 33142</h4>
+        
+        {% else %}
+
+        <h4 class="mb-3" style=" margin-top: 26px;">Shipping address</h4>
+        
+        <div class="mb-3">
+        <label for="name">Name</label>
+        <p>{{ order.shipping_address.name }}</p>
+        </div>
+        <div class="mb-3">
+        <label for="address">Address</label>
+        <p>{{ order.shipping_address.street_address }}</p>
+        </div>
+
+        {% if order.shipping_address.apartment_address %}
+        <div class="mb-3">
+        <label for="address2">Address 2</label>
+        <p>{{ order.shipping_address.apartment_address }}</p>
+        </div>
+        {% endif %}
+
+        <div class="row">
+        <div class="col-md-5 mb-3">
+            <label for="country">Country</label>
+            <p>{{ order.shipping_address.country }}</p>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-4 mb-3">
+            <label for="city">City</label>
+            <p>{{ order.shipping_address.city }}</p>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="state">State</label>
+            <p>{{ order.shipping_address.state }}</p>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="zip">Zip</label>
+            <p>{{ order.shipping_address.zip }}</p>
+        </div>
+        </div>
+
+        {% endif %}
+
+        <hr class="mb-4">
+
+        <h4 class="mb-3">Payment</h4>
+        <p>Payment must be done via Wire Transfer. Instructions will be provided with Invoice via email</p>
+        
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Place Order</button>
+        <br>
+        {{ form.edit_address }}
+        {{ form.edit_order }}
+        <button class="btn btn-lg btn-outline-dark" style="width:50%; float:left;" onclick="document.getElementById('id_edit_address').value=true;document.getElementById('id_edit_order').value=false; this.form.submit()">Edit Shipping/Billing Address</button>
+        <button class="btn btn-lg btn-outline-dark" style="width:50%; float:right;" onclick="document.getElementById('id_edit_order').value=true;document.getElementById('id_edit_address').value=false; this.form.submit()">Edit Order</button>
+      </form>
+      
+    </div>
+
+    {% include "order_snippet.html" %}
+
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <!-- <p class="mb-1">&copy; 2024 Callidon Group Inc</p>
+    <ul class="list-inline">
+      <li class="list-inline-item"><a href="#">Privacy</a></li>
+      <li class="list-inline-item"><a href="#">Terms</a></li>
+      <li class="list-inline-item"><a href="#">Support</a></li>
+    </ul> -->
+  </footer>
+</div>
+{% endblock content %}

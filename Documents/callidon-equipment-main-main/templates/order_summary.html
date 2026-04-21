@@ -1,0 +1,71 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 top30">
+      <h2>Order Summary</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col"></th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Price</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          {% for order_item in object.items.all %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>
+              <a href="/inventory/{{ order_item.item.slug }}">
+			          <img src="{{ order_item.item.image1.url }}" style="width: 130px;"> 
+              </a>
+            </td>
+            <td><a href="/inventory/{{ order_item.item.slug }}">{{ order_item.item.title }}</a></td>
+            <td>${{ order_item.item.price_str }}</td>
+            <!-- <td> -->
+            	<!-- <a href="{% url 'core:remove-single-item-from-cart' order_item.item.slug %}"><i class="fas fa-minus mr-3"></i></a>
+            	{{ order_item.quantity }}
+            	<a href="{% url 'core:add-to-cart' order_item.item.slug %}"><i class="fas fa-plus ml-3"></i></a> -->
+            <!-- </td> -->
+            <td>
+              <a style="color: red" href="{% url 'core:remove-from-cart' order_item.item.slug %}">
+              	<i class="fas fa-trash float-right"></i>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+			<td colspan="5">You don't have any items in your order</td>
+          </tr>
+        </tbody>
+        {% endfor %}
+        {% if object.coupon %}
+        <tr>
+          <td colspan="5"><b>Coupon : </b></td>
+          <td>- ${{ object.coupon.amount }}</td>
+        </tr>
+        {% endif%}
+        {% if object.get_total %}
+        <tr>
+        	<td colspan="5"><b>Order Subtotal : </b></td>
+        	<td><b>${{ object.get_total }}</b></td>
+        </tr>
+        <tr>
+        	<td colspan="5">
+        		<a href="/checkout" class="btn btn-warning float-right ml-2">Checkout</a>
+        		<a href="/" class="btn btn-primary float-right">Continue Browsing</a>
+
+        	</td>
+        </tr>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

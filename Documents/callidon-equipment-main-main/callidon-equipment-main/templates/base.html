@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include "header.html" %}
+
+  <title>{% block head_title %}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Callidon Equipment is a heavy equipment sales and brokerage company specializing in quality pre-owned construction and industrial machinery. We offer carefully inspected equipment, a 30-day limited parts warranty, financing options, and nationwide and international shipping to support contractors and equipment operators worldwide.{% endblock %}">
+  <meta name="keywords" content="{% block meta_keywords %}Heavy equipment sales, Used construction equipment, Skid steers, Wheel loaders, Excavators, Generators, Concrete pump trucks, Equipment brokerage, Equipment export, Nationwide shipping{% endblock %}">
+  {% block extra_head %} {% endblock %}
+  <style type="text/css">
+    .form-control {
+    display: block;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da !important;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    
+    async function getZipCode(lat, lng) {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`;
+
+      try {
+          const response = await axios.get(url);
+          if (response.data && response.data.address && response.data.address.postcode) {
+              return response.data.address.postcode;
+          } else {
+              console.error('No postcode found in the response');
+          }
+      } catch (error) {
+          console.error('Error making request:', error);
+      }
+
+      return null; // Return null if zip code is not found
+    }
+    const geoFindMe = () => {
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(success, error, geoOptions);
+      } else {
+          console.log("Geolocation services are not supported by your web browser.");
+      }
+    }
+    var zip = null;
+    const success = (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const altitude = position.coords.altitude;
+        const accuracy = position.coords.accuracy;
+        zip = getZipCode(latitude, longitude).then(zipCode => {
+          if (zipCode) {
+              console.log('Zip Code:', zipCode);
+              return zipCode;
+          } else {
+              console.log('Zip Code not found');
+              return null;
+          }
+        });
+        console.log(`lat: ${latitude} long: ${longitude} zip: ${zip}`);
+    }
+
+    const error = (error) => {
+        console.log(`Unable to retrieve your location due to ${error.code}: ${error.message}`);
+    }
+
+    const geoOptions = {
+        enableHighAccuracy: true,
+        maximumAge: 30000,
+        timeout: 27000
+    };
+  </script>
+  <body>
+      <!-- Google Tag Manager (noscript) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WD5FWS2N"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+      </noscript>
+      <!-- End Google Tag Manager (noscript) -->
+    
+      {% include "nav.html"%}
+      <div class="mt-2">
+        {% if messages %} {% for message in messages %}
+        <div
+          class="alert alert-{{ message.tags }} alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+
+          <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+
+      {% endfor %} 
+      {% endif %} 
+
+      {% block content %} 
+      {% endblock content %}
+
+      {% block extra_body %} 
+      {% endblock %} 
+
+      {% include "footer.html"%} 
+      {% include "script.html"%}
+
+      {% block extra_scripts %}
+      {% endblock extra_scripts %}
+  </body>
+</html>

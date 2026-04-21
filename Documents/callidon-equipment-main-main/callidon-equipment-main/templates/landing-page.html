@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <head>
+    {% include 'page-tag-manager-head.html' %}
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    {% if is_indexable %}
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
+    {% else %}
+    <meta name="robots" content="noindex, nofollow"/>
+    {% endif %}
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0"/>
+    <meta name="theme-color" content="#616161"/>    
+    {% include 'page-meta-data.html' %}
+    {% include 'landing-styles.html' %}
+    <script type= "text/javascript" src="/static/js/countries.js"></script>
+    <script src="https://widgets.leadconnectorhq.com/loader.js" data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js" data-widget-id="672cf447e99a3201c8e39730"></script>
+  </head>
+  <body>
+    
+    {% include 'page-tag-manager-body.html' %}
+    
+    {% if includes_floating_contact_icons %}
+    {% include 'floating-contact-icons.html' %}
+    {% endif %}
+
+    {% if includes_icon_bar %}
+    {% include 'icon-bar.html' %}
+    {% endif %}
+
+    {% include 'page-header.html' %}
+
+    {% include 'landing-content.html' %}
+
+    {% include 'page-footer.html' %}
+
+    {% include 'landing-scripts.html' %}
+
+  </body>
+</html>

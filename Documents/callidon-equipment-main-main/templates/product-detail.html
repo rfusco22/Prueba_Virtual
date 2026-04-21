@@ -1,0 +1,650 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% load product_image_template_tags %}
+
+{% block head_title %}{{ object.title }} | Callidon Equipment{% endblock %}
+
+{% block extra_head %}
+<meta property="og:title" content="{{ object.title }} | Callidon Equipment">
+<meta property="og:description" content="Check out this {{ object.make }} {{ object.model }} at Callidon Equipment.">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+
+<meta property="og:image" content="https://callidonequipment.com/media/{{ object.image1.name }}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://callidonequipment.com/media/{{ object.image1 }}">
+{% endblock %}
+
+{% block content %}
+    <div id="image-modal" class="modal">
+        <div class="top-padding"></div>
+        <img class="modal-content-custom" id="modal-image">
+    </div>
+    
+    <div id="dropDownSelect1"></div>
+    <div id="dropDownSelect2"></div>
+{% endblock content %}
+
+	<div id="image-modal" class="modal">
+		<div class="top-padding"></div>
+		<img class="modal-content-custom" id="modal-image">
+  	</div>
+
+	<div id="video-modal" class="modal">
+		<div class="top-padding"></div>
+		<video class="modal-content-custom" controls="controls" preload="metadata" id="modal-video">
+			<source src="" type="video/mp4">
+		</video>
+  	</div>
+
+	<!-- breadcrumb -->
+	<div class="bread-crumb bgwhite flex-w p-l-52 p-r-15 p-t-30 p-l-15-sm">
+		<a href="/" class="s-text16">
+			Home
+			<i class="fa fa-angle-right m-l-8 m-r-9" aria-hidden="true"></i>
+		</a>
+
+		<a href="/inventory?category={{ object.category.title }}" class="s-text16">
+			{{ object.category }}
+			<i class="fa fa-angle-right m-l-8 m-r-9" aria-hidden="true"></i>
+		</a>
+
+		<span class="s-text17">
+			{{object.title}}
+		</span>
+	</div>
+
+	<!-- Product Detail -->
+	<div class="container bgwhite p-t-35 p-b-80">
+		<div class="flex-w flex-sb">
+			<div class="w-size13 p-t-30 respon5">
+				<div class="wrap-slick3 flex-sb flex-w">
+					<div class="wrap-slick3-dots" style="height:700px; overflow-y:auto;"></div>
+
+					<div class="slick3">
+						{% product_images object %}
+					</div>
+				</div>
+			</div>
+
+			<script>			
+				// Get the modal
+				var imageModal = document.getElementById("image-modal");
+				var videoModal = document.getElementById("video-modal");
+				var imgs = document.getElementsByClassName("slideshow-img")
+				var currIdx = 0;
+				var numImgs = imgs.length;
+				var modalImg = document.getElementById("modal-image");
+				var modalVideo = document.getElementById("modal-video");
+				var vid = document.getElementById("listing-video");
+				if (vid != null) {
+					numImgs += 1;
+				}
+
+				imageModal.onclick = function(){
+					imageModal.style.display = "none";
+				}
+				videoModal.onclick = function(){
+					videoModal.style.display = "none";
+				}
+
+				function displayMedia(idx) {
+					if ((vid != null) && (currIdx == (numImgs - 1))) {
+						console.log("setting video modal");
+						imageModal.style.display = "none";
+						videoModal.style.display = "block";
+					} else {
+						console.log("setting image modal");
+						modalImg.src = imgs[currIdx].src;
+						imageModal.style.display = "block";
+						videoModal.style.display = "none";
+					}
+				}
+
+				function loadmodal(idx) {
+					console.log("loadmodal(" + idx + ")");
+					currIdx = idx;
+					modalImg.src = imgs[idx].src;
+					if (vid != null) {
+						modalSource = modalVideo.getElementsByTagName("source")[0];
+						source = vid.getElementsByTagName("source")[0];
+						console.log(source.src);
+						modalSource.src = source.src;
+						console.log(modalSource.src);
+						modalVideo.load();
+					}
+					displayMedia(idx);
+				}
+
+				function setNextImg() {
+					if (!isModalOn()) {
+						return;
+					}
+					currIdx = (currIdx + 1) % numImgs;
+					displayMedia(currIdx);
+				}
+
+				function setPrevImg() {
+					if (!isModalOn()) {
+						return;
+					}
+					currIdx = currIdx - 1;
+					if (currIdx < 0) {
+						currIdx += numImgs;
+					}
+					displayMedia(currIdx);	
+				}
+
+				function isModalOn() {
+					return ((imageModal.style.display == "block") ||
+						(videoModal.style.display == "block"));
+				}
+				
+				document.addEventListener('keydown', function(e) {
+					switch(event.key) {
+						case "Escape":
+							imageModal.style.display = "none";
+							videoModal.style.display = "none";
+							break;
+						case 'ArrowLeft':
+						case 'ArrowUp':
+							setPrevImg();
+							break;
+						case 'ArrowRight':
+						case 'ArrowDown':
+							setNextImg();
+							break;
+						default:
+							// Do nothing for other keys
+							break;
+					}
+				});
+
+				var touchStartX = null;
+
+				// Add touch start event listener
+				document.addEventListener('touchstart', function(event) {
+					touchStartX = event.touches[0].clientX;
+				});
+
+				// Add touch end event listener
+				document.addEventListener('touchend', function(event) {
+					if (touchStartX !== null) {
+						var touchEndX = event.changedTouches[0].clientX;
+						var deltaX = touchEndX - touchStartX;
+
+						// Check swipe gestures
+						if (deltaX > 50) { 
+							setPrevImg();
+						} else if (deltaX < -50) {
+							setNextImg();
+						}
+
+						touchStartX = null;
+					}
+				});
+				
+			</script>
+
+			<div class="w-size14 p-t-30 respon5">
+				{% if object.label == 'U' %}
+				<h4 class="product-detail-name m-text16 p-b-13" style="color: crimson;">
+					<strong>SOLD</strong>
+				</h4>
+				{% elif object.label == 'S' %}
+				<h4 class="product-detail-name m-text16 p-b-13" style="color: rgb(228, 140, 33);">
+					<strong>SALE</strong>
+				</h4>
+				{% endif %}
+				<h4 class="product-detail-name m-text16 p-b-13">
+					{{ object.title }}
+				</h4>
+				{% if object.discount_price_str %}
+				<span class="block2-oldprice m-text16-st p-b-13" style="color: black;">
+					${{ object.price_str }}
+				</span>
+
+				<span class="block2-newprice m-text16-or p-b-13">
+					${{ object.discount_price_str }}
+				</span>
+				<br>
+				{% else %}
+				<h4 class="product-detail-name m-text16 p-b-13">
+					${{ object.price_str }}
+				</h4>
+				{% endif %}
+
+				<span class="s-text8 m-r-35">SKU: {{ object.stock_no }}</span><br>
+				<span class="s-text8 m-r-35">Make: {{ object.make }}</span><br>
+				<span class="s-text8 m-r-35">Model: {{ object.model }}</span><br>
+				<span class="s-text8 m-r-35">Year: {{ object.year }}</span><br>
+				<span class="s-text8 m-r-35">Operating hours: {{ object.hours }}</span><br>
+				<span class="s-text8 m-r-35">Engine: {{ object.engine }}</span><br>
+				
+				<br>
+
+				<div class="w-size16 flex-m flex-w">
+					{% if object.label == 'U' %}
+					<a class="btn btn-primary" style="margin: 2px; background-color: rgb(170, 170, 170); border-color: rgb(170, 170, 170);" disabled>
+						Add to Order
+					</a>
+					{% elif item_in_order %}
+					<a href="{{object.get_remove_from_cart_url}}" class="btn btn-outline-dark" style="margin: 2px;">Remove from Order</a>
+					{% else %}
+					<a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary" style="margin: 2px;">
+						Add to Order
+					</a>
+					<a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary" style="margin: 2px;">
+						Add to Order
+					</a>
+					{% endif %}
+				</div>
+				<br>
+
+				<div class="bo6 p-t-15 p-b-14">
+					<h5 class="m-text19 trans-0-4">
+						Description
+					</h5>
+
+					<div class="p-t-15 p-b-23">
+						<pre class="s-text8">{{ object.description }}</pre>
+					</div>
+				</div>
+
+				{% if object.is_warranty_eligible %}
+					<div class="p-t-15 p-b-23">
+						<h5>This item is eligible for extended warranty!</h5>
+					</div>
+				{% endif %}
+
+				<div class="w-size16 flex-m flex-w">
+					<form method="GET" class="needs-validation" novalidate>
+						<!-- {% csrf_token %} -->
+						<br>
+						<h5 class="p-b-23">Get Shipping Estimate</h5>
+						<div>
+							<label for="zip">Delivery Zip Code:</label>
+							<!-- <input class="zip" type="number" min="0" max="99999" style="width:60px;" name="zip_code" id="zip_code"> -->
+							{{ form.zip }}
+						</div>
+						<br>
+						<button class="btn btn-primary" style="margin: 2px; width: 260px;" type="submit">Get Shipping Estimate</button>
+						{% if shipping %}
+						<div>
+							<br>
+							<h5 id="shipping_estimate">${{ shipping }}*</h5>
+						</div>
+						<hr>
+						<p>
+							*This Shipping Estimator tool calculates an estimate of the cost to
+							 ship an item within the United States based on historical pricing 
+							 for similar shipments. Callidon Equipment is providing customers 
+							 this tool as a convenience and for informational purposes only. 
+							 This estimate is not a quote nor a binding agreement between you 
+							 and Callidon Equipment. Callidon Equipment is not responsible for 
+							 any discrepancies between the estimate provided by the tool and the 
+							 actual total cost to ship an item. A formal transportation quote will
+							 be provided after order placement if the order is not for local pickup.
+						</p>
+						{% endif %}
+					</form>
+				</div>
+				<script>
+					// Shipping Calculation
+					const shippingForm = document.querySelector('.needs-validation');
+					if (shippingForm) {
+						shippingForm.addEventListener('submit', function(e) {
+							e.preventDefault();
+							
+							const zipInput = shippingForm.querySelector('input[name="zip"]');
+							const zip = zipInput.value.trim();
+							
+							if (!zip) {
+								alert('Please enter a zip code');
+								return;
+							}
+							
+							// Redirect to product page with zip code query parameter
+							window.location.href = window.location.pathname + '?zip=' + encodeURIComponent(zip);
+						});
+					}
+				</script>
+			
+			</div>
+		</div>
+	</div>
+
+	
+
+	<script type="application/ld+json">
+		{
+		  "@context": "https://schema.org",
+		  "@graph": [{
+			"@type": ["LocalBusiness", "Organization"],
+			"@id": "https://callidonequipment.com/#organization",
+			"name": "Callidon Equipment",
+			"url": "https://callidonequipment.com",
+			"telephone": "(786)674-1345",
+			"address": {
+				"@type": "PostalAddress",
+				"addressLocality": "Miami",
+				"addressRegion": "FL",
+				"postalCode": "33142",
+				"streetAddress": "5790 NW 35th Ave",
+				"image": "https://callidonequipment.com/static/images/callidon_media/CALLIDON_LOGO.png"
+			}
+		  }],
+		  "@type": "Product",
+		  "brand": {
+			"@type": "Brand",
+			"name": "{{ object.make }}"
+		  },
+		  "description": "{{ object.description }}",
+		  "name": "{{ object.title }}",
+		  "image": "{{ object.image1.url }}",
+		  "offers": {
+			"@type": "Offer",
+			"availability": "https://schema.org/InStock",
+			"price": "{{ object.price }}",
+			"priceCurrency": "USD",
+			"priceValidUntil": "2030-12-31",
+			"itemCondition": "RefurbishedCondition",
+			"url": "https://callidonequipment.com/inventory/{{ object.slug }}",
+			"seller": {
+				"@type": "Organization",
+				"@id": "https://callidonequipment.com/",
+				"name": "Callidon Equipment",
+				"url": "https://callidonequipment.com",
+				"logo": "https://callidonequipment.com/static/images/callidon_media/CALLIDON_LOGO.png"
+			}
+		  },
+		  "category": "{{ object.category }}",
+		  "sku": "{{ object.stock_no }}",
+		  "url": "https://callidonequipment.com/inventory/{{ object.slug }}",
+		  "manufacturer": {
+			"@type": "Organization",
+			"name": "{{ object.make }}"
+		  }
+		}
+	</script>
+
+	<!-- TODO: Implement related products section -->
+
+	<!-- Relate Product -->
+	<!-- <section class="relateproduct bgwhite p-t-45 p-b-138">
+		<div class="container">
+			<div class="sec-title p-b-60">
+				<h3 class="m-text5 t-center">
+					Related Products
+				</h3>
+			</div>
+			
+			<div class="wrap-slick2">
+				<div class="slick2">
+
+					<div class="item-slick2 p-l-15 p-r-15">
+						<div class="block2">
+							<div class="block2-img wrap-pic-w of-hidden pos-relative block2-labelnew">
+								<img src="{% static 'images/item-02.webp' %}" alt="IMG-PRODUCT">
+
+								<div class="block2-overlay trans-0-4">
+									<a href="#" class="block2-btn-addwishlist hov-pointer trans-0-4">
+										<i class="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
+										<i class="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
+									</a>
+
+									<div class="block2-btn-addcart w-size1 trans-0-4">
+										<button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="block2-txt p-t-20">
+								<a href="product-detail.html" class="block2-name dis-block s-text3 p-b-5">
+									Herschel supply co 25l
+								</a>
+
+								<span class="block2-price m-text6 p-r-5">
+									$75.00
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="item-slick2 p-l-15 p-r-15">
+						<div class="block2">
+							<div class="block2-img wrap-pic-w of-hidden pos-relative">
+								<img src="{% static 'images/item-03.webp' %}" alt="IMG-PRODUCT">
+
+								<div class="block2-overlay trans-0-4">
+									<a href="#" class="block2-btn-addwishlist hov-pointer trans-0-4">
+										<i class="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
+										<i class="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
+									</a>
+
+									<div class="block2-btn-addcart w-size1 trans-0-4">
+										<button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="block2-txt p-t-20">
+								<a href="product-detail.html" class="block2-name dis-block s-text3 p-b-5">
+									Denim jacket blue
+								</a>
+
+								<span class="block2-price m-text6 p-r-5">
+									$92.50
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="item-slick2 p-l-15 p-r-15">
+						<div class="block2">
+							<div class="block2-img wrap-pic-w of-hidden pos-relative">
+								<img src="{% static 'images/item-05.webp' %}" alt="IMG-PRODUCT">
+
+								<div class="block2-overlay trans-0-4">
+									<a href="#" class="block2-btn-addwishlist hov-pointer trans-0-4">
+										<i class="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
+										<i class="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
+									</a>
+
+									<div class="block2-btn-addcart w-size1 trans-0-4">
+										<button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="block2-txt p-t-20">
+								<a href="product-detail.html" class="block2-name dis-block s-text3 p-b-5">
+									Coach slim easton black
+								</a>
+
+								<span class="block2-price m-text6 p-r-5">
+									$165.90
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="item-slick2 p-l-15 p-r-15">
+						<div class="block2">
+							<div class="block2-img wrap-pic-w of-hidden pos-relative block2-labelsale">
+								<img src="{% static 'images/item-07.webp' %}" alt="IMG-PRODUCT">
+
+								<div class="block2-overlay trans-0-4">
+									<a href="#" class="block2-btn-addwishlist hov-pointer trans-0-4">
+										<i class="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
+										<i class="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
+									</a>
+
+									<div class="block2-btn-addcart w-size1 trans-0-4">
+										<button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="block2-txt p-t-20">
+								<a href="product-detail.html" class="block2-name dis-block s-text3 p-b-5">
+									Frayed denim shorts
+								</a>
+
+								<span class="block2-oldprice m-text7 p-r-5">
+									$29.50
+								</span>
+
+								<span class="block2-newprice m-text8 p-r-5">
+									$15.90
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="item-slick2 p-l-15 p-r-15">
+						<div class="block2">
+							<div class="block2-img wrap-pic-w of-hidden pos-relative block2-labelnew">
+								<img src="{% static 'images/item-02.webp' %}" alt="IMG-PRODUCT">
+
+								<div class="block2-overlay trans-0-4">
+									<a href="#" class="block2-btn-addwishlist hov-pointer trans-0-4">
+										<i class="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
+										<i class="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
+									</a>
+
+									<div class="block2-btn-addcart w-size1 trans-0-4">
+										<button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="block2-txt p-t-20">
+								<a href="product-detail.html" class="block2-name dis-block s-text3 p-b-5">
+									Herschel supply co 25l
+								</a>
+
+								<span class="block2-price m-text6 p-r-5">
+									$75.00
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="item-slick2 p-l-15 p-r-15">
+						<div class="block2">
+							<div class="block2-img wrap-pic-w of-hidden pos-relative">
+								<img src="{% static 'images/item-03.webp' %}" alt="IMG-PRODUCT">
+
+								<div class="block2-overlay trans-0-4">
+									<a href="#" class="block2-btn-addwishlist hov-pointer trans-0-4">
+										<i class="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
+										<i class="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
+									</a>
+
+									<div class="block2-btn-addcart w-size1 trans-0-4">
+										<button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="block2-txt p-t-20">
+								<a href="product-detail.html" class="block2-name dis-block s-text3 p-b-5">
+									Denim jacket blue
+								</a>
+
+								<span class="block2-price m-text6 p-r-5">
+									$92.50
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="item-slick2 p-l-15 p-r-15">
+						<div class="block2">
+							<div class="block2-img wrap-pic-w of-hidden pos-relative">
+								<img src="{% static 'images/item-05.webp' %}" alt="IMG-PRODUCT">
+
+								<div class="block2-overlay trans-0-4">
+									<a href="#" class="block2-btn-addwishlist hov-pointer trans-0-4">
+										<i class="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
+										<i class="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
+									</a>
+
+									<div class="block2-btn-addcart w-size1 trans-0-4">
+										<button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="block2-txt p-t-20">
+								<a href="product-detail.html" class="block2-name dis-block s-text3 p-b-5">
+									Coach slim easton black
+								</a>
+
+								<span class="block2-price m-text6 p-r-5">
+									$165.90
+								</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="item-slick2 p-l-15 p-r-15">
+						<div class="block2">
+							<div class="block2-img wrap-pic-w of-hidden pos-relative block2-labelsale">
+								<img src="{% static 'images/item-07.webp' %}" alt="IMG-PRODUCT">
+
+								<div class="block2-overlay trans-0-4">
+									<a href="#" class="block2-btn-addwishlist hov-pointer trans-0-4">
+										<i class="icon-wishlist icon_heart_alt" aria-hidden="true"></i>
+										<i class="icon-wishlist icon_heart dis-none" aria-hidden="true"></i>
+									</a>
+
+									<div class="block2-btn-addcart w-size1 trans-0-4">
+										<button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="block2-txt p-t-20">
+								<a href="product-detail.html" class="block2-name dis-block s-text3 p-b-5">
+									Frayed denim shorts
+								</a>
+
+								<span class="block2-oldprice m-text7 p-r-5">
+									$29.50
+								</span>
+
+								<span class="block2-newprice m-text8 p-r-5">
+									$15.90
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</section> -->
+
+	<!-- Container Selection -->
+	<div id="dropDownSelect1"></div>
+	<div id="dropDownSelect2"></div>
+
+	{% endblock content %}
